@@ -171,7 +171,7 @@ class Woo_Side_Cart_Cross_Sells
 ?>
         <div class="woo-cross-sells-wrapper">
             <div class="cross-sells-header">
-                <h4><?php esc_html_e('You may also like', 'woo-side-cart'); ?></h4>
+                <h4><?php esc_html_e('You may also like', 'cart-booster-for-woocommerce'); ?></h4>
 
             </div>
 
@@ -198,7 +198,7 @@ class Woo_Side_Cart_Cross_Sells
                                 <a href="<?php echo esc_url('?add-to-cart=' . $product->get_id()); ?>"
                                     class="add-to-cart-btn"
                                     data-product-id="<?php echo esc_attr($product->get_id()); ?>">
-                                    <?php esc_html_e('Add', 'woo-side-cart'); ?>
+                                    <?php esc_html_e('Add', 'cart-booster-for-woocommerce'); ?>
                                 </a>
                             </div>
                         </div>

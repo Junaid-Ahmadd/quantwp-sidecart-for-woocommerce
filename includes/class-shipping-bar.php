@@ -126,8 +126,8 @@ class Woo_Side_Cart_Shipping_Bar
                         <?php
                         printf(
                             /* translators: %s: The text 'Free Shipping' in bold */
-                            esc_html__('🎉 You qualify for %s', 'woo-side-cart'),
-                            '<strong>' . esc_html__('Free Shipping', 'woo-side-cart') . '</strong>'
+                            esc_html__('🎉 You qualify for %s', 'cart-booster-for-woocommerce'),
+                            '<strong>' . esc_html__('Free Shipping', 'cart-booster-for-woocommerce') . '</strong>'
                         );
                         ?>
                     </span>
@@ -136,7 +136,7 @@ class Woo_Side_Cart_Shipping_Bar
                         <?php
                         printf(
                             /* translators: %s: The remaining amount required for free shipping (e.g. $10.00) */
-                            esc_html__('Add %s more to get FREE shipping', 'woo-side-cart'),
+                            esc_html__('Add %s more to get FREE shipping', 'cart-booster-for-woocommerce'),
                             '<strong>' . wp_kses_post(wc_price($progress['remaining'])) . '</strong>'
                         );
                         ?>

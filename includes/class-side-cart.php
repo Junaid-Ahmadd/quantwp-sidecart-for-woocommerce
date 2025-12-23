@@ -79,7 +79,7 @@ class Woo_Side_Cart_Main
         // Get the SVG string (fallback to classic if key doesn't exist)
         $svg = isset($icons[$selected_icon_key]) ? $icons[$selected_icon_key] : $icons['cart-classic'];
 ?>
-        <a href="#" class="woo-side-cart-trigger" aria-label="<?php esc_attr_e('View Cart', 'woo-side-cart'); ?>">
+        <a href="#" class="woo-side-cart-trigger" aria-label="<?php esc_attr_e('View Cart', 'cart-booster-for-woocommerce'); ?>">
             <?php
             $allowed_svg = array(
                 'svg' => array('viewbox' => true, 'fill' => true, 'stroke' => true, 'stroke-width' => true, 'stroke-linecap' => true, 'stroke-linejoin' => true, 'aria-hidden' => true, 'class' => true, 'width' => true, 'height' => true),
@@ -115,7 +115,7 @@ class Woo_Side_Cart_Main
                 <?php
                 printf(
                     /* translators: %d: The number of items in the cart */
-                    esc_html__('Cart (%d)', 'woo-side-cart'),
+                    esc_html__('Cart (%d)', 'cart-booster-for-woocommerce'),
                     absint($cart->get_cart_contents_count())
                 );
                 ?>
@@ -193,7 +193,7 @@ class Woo_Side_Cart_Main
                 <?php endforeach; ?>
             <?php else : ?>
                 <p class="empty-cart-message">
-                    <?php esc_html_e('Your cart is empty', 'woo-side-cart'); ?>
+                    <?php esc_html_e('Your cart is empty', 'cart-booster-for-woocommerce'); ?>
                 </p>
             <?php endif; ?>
             <?php
@@ -207,12 +207,12 @@ class Woo_Side_Cart_Main
         <footer class="woo-side-cart-footer">
             <?php if ($cart_has_items) : ?>
                 <div class="cart-subtotal">
-                    <span><?php esc_html_e('Subtotal:', 'woo-side-cart'); ?></span>
+                    <span><?php esc_html_e('Subtotal:', 'cart-booster-for-woocommerce'); ?></span>
                     <span><?php echo wp_kses_post(wc_price($cart->get_subtotal())); ?></span>
                 </div>
 
                 <a href="<?php echo esc_url(wc_get_checkout_url()); ?>" class="checkout-button">
-                    <?php esc_html_e('Checkout', 'woo-side-cart'); ?>
+                    <?php esc_html_e('Checkout', 'cart-booster-for-woocommerce'); ?>
                 </a>
             <?php endif; ?>
         </footer>

@@ -11,7 +11,7 @@
  * Author URI: https://github.com/Junaid-Ahmadd
  * License: GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain: woo-side-cart
+ * Text Domain: cart-booster-for-woocommerce
  * Domain Path: /languages
  * Requires Plugins: woocommerce
  */
@@ -42,7 +42,7 @@ function woo_side_cart_woocommerce_missing_notice()
 {
 ?>
     <div class="notice notice-error">
-        <p><?php esc_html_e('Woo Side Cart requires WooCommerce to be installed and activated.', 'woo-side-cart'); ?></p>
+        <p><?php esc_html_e('Woo Side Cart requires WooCommerce to be installed and activated.', 'cart-booster-for-woocommerce'); ?></p>
     </div>
 <?php
 }

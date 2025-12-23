@@ -71,8 +71,8 @@ class Woo_Side_Cart_Settings
     public function add_settings_page()
     {
         add_options_page(
-            __('Side Cart Settings', 'woo-side-cart'),
-            __('Side Cart', 'woo-side-cart'),
+            __('Side Cart Settings', 'cart-booster-for-woocommerce'),
+            __('Side Cart', 'cart-booster-for-woocommerce'),
             'manage_options',
             $this->page_slug,
             array($this, 'render_settings_page')
@@ -218,13 +218,13 @@ class Woo_Side_Cart_Settings
                 <?php settings_fields($this->option_group); ?>
 
                 <!-- General Settings -->
-                <h2><?php esc_html_e('General Settings', 'woo-side-cart'); ?></h2>
+                <h2><?php esc_html_e('General Settings', 'cart-booster-for-woocommerce'); ?></h2>
                 <table class="form-table">
 
                     <tr>
                         <th scope="row">
                             <label for="woo_side_cart_auto_open">
-                                <?php esc_html_e('Auto-Open Cart', 'woo-side-cart'); ?>
+                                <?php esc_html_e('Auto-Open Cart', 'cart-booster-for-woocommerce'); ?>
                             </label>
                         </th>
                         <td>
@@ -234,7 +234,7 @@ class Woo_Side_Cart_Settings
                                 value="1"
                                 <?php checked(get_option('woo_side_cart_auto_open', 1), 1); ?>>
                             <p class="description">
-                                <?php esc_html_e('Automatically open side cart when item is added to cart.', 'woo-side-cart'); ?>
+                                <?php esc_html_e('Automatically open side cart when item is added to cart.', 'cart-booster-for-woocommerce'); ?>
                             </p>
                         </td>
                     </tr>
@@ -242,12 +242,12 @@ class Woo_Side_Cart_Settings
                 </table>
 
                 <!-- Shipping Bar Settings -->
-                <h2><?php esc_html_e('Shipping Progress Bar', 'woo-side-cart'); ?></h2>
+                <h2><?php esc_html_e('Shipping Progress Bar', 'cart-booster-for-woocommerce'); ?></h2>
                 <table class="form-table">
                     <tr>
                         <th scope="row">
                             <label for="woo_side_cart_shipping_bar_enabled">
-                                <?php esc_html_e('Enable Shipping Bar', 'woo-side-cart'); ?>
+                                <?php esc_html_e('Enable Shipping Bar', 'cart-booster-for-woocommerce'); ?>
                             </label>
                         </th>
                         <td>
@@ -257,7 +257,7 @@ class Woo_Side_Cart_Settings
                                 value="1"
                                 <?php checked(get_option('woo_side_cart_shipping_bar_enabled', 1), 1); ?>>
                             <p class="description">
-                                <?php esc_html_e('Show free shipping progress bar in side cart.', 'woo-side-cart'); ?>
+                                <?php esc_html_e('Show free shipping progress bar in side cart.', 'cart-booster-for-woocommerce'); ?>
                             </p>
                         </td>
                     </tr>
@@ -265,7 +265,7 @@ class Woo_Side_Cart_Settings
                     <tr>
                         <th scope="row">
                             <label for="woo_side_cart_shipping_threshold">
-                                <?php esc_html_e('Free Shipping Threshold', 'woo-side-cart'); ?>
+                                <?php esc_html_e('Free Shipping Threshold', 'cart-booster-for-woocommerce'); ?>
                             </label>
                         </th>
                         <td>
@@ -280,7 +280,7 @@ class Woo_Side_Cart_Settings
                                 <?php
                                 printf(
                                     /* translators: %s: Currency symbol (e.g. USD, EUR) */
-                                    esc_html__('Minimum cart amount for free shipping. Enter amount in %s.', 'woo-side-cart'),
+                                    esc_html__('Minimum cart amount for free shipping. Enter amount in %s.', 'cart-booster-for-woocommerce'),
                                     esc_html(get_woocommerce_currency())
                                 );
                                 ?>
@@ -290,12 +290,12 @@ class Woo_Side_Cart_Settings
                 </table>
 
                 <!-- Cross-Sell Settings -->
-                <h2><?php esc_html_e('Cross-Sell Products', 'woo-side-cart'); ?></h2>
+                <h2><?php esc_html_e('Cross-Sell Products', 'cart-booster-for-woocommerce'); ?></h2>
                 <table class="form-table">
                     <tr>
                         <th scope="row">
                             <label for="woo_side_cart_cross_sells_enabled">
-                                <?php esc_html_e('Enable Cross-Sells', 'woo-side-cart'); ?>
+                                <?php esc_html_e('Enable Cross-Sells', 'cart-booster-for-woocommerce'); ?>
                             </label>
                         </th>
                         <td>
@@ -305,7 +305,7 @@ class Woo_Side_Cart_Settings
                                 value="1"
                                 <?php checked(get_option('woo_side_cart_cross_sells_enabled', 1), 1); ?>>
                             <p class="description">
-                                <?php esc_html_e('Show cross-sell product carousel in side cart.', 'woo-side-cart'); ?>
+                                <?php esc_html_e('Show cross-sell product carousel in side cart.', 'cart-booster-for-woocommerce'); ?>
                             </p>
                         </td>
                     </tr>
@@ -313,7 +313,7 @@ class Woo_Side_Cart_Settings
                     <tr>
                         <th scope="row">
                             <label for="woo_side_cart_cross_sells_limit">
-                                <?php esc_html_e('Products to Show', 'woo-side-cart'); ?>
+                                <?php esc_html_e('Products to Show', 'cart-booster-for-woocommerce'); ?>
                             </label>
                         </th>
                         <td>
@@ -325,24 +325,24 @@ class Woo_Side_Cart_Settings
                                 max="20"
                                 class="small-text">
                             <p class="description">
-                                <?php esc_html_e('Maximum number of cross-sell products to display (1-20).', 'woo-side-cart'); ?>
+                                <?php esc_html_e('Maximum number of cross-sell products to display (1-20).', 'cart-booster-for-woocommerce'); ?>
                             </p>
                         </td>
                     </tr>
                 </table>
 
-                <h2><?php esc_html_e('Cart Icon', 'woo-side-cart'); ?></h2>
+                <h2><?php esc_html_e('Cart Icon', 'cart-booster-for-woocommerce'); ?></h2>
                 <table class="form-table">
                     <tr>
-                        <th scope="row"><?php esc_html_e('Choose Icon', 'woo-side-cart'); ?></th>
+                        <th scope="row"><?php esc_html_e('Choose Icon', 'cart-booster-for-woocommerce'); ?></th>
                         <td>
                             <?php $this->render_icon_selector(); ?>
-                            <p class="description"><?php esc_html_e('Select the icon to display on your site trigger.', 'woo-side-cart'); ?></p>
+                            <p class="description"><?php esc_html_e('Select the icon to display on your site trigger.', 'cart-booster-for-woocommerce'); ?></p>
                         </td>
                     </tr>
                 </table>
 
-                <?php submit_button(__('Save Settings', 'woo-side-cart')); ?>
+                <?php submit_button(__('Save Settings', 'cart-booster-for-woocommerce')); ?>
             </form>
         </div>
 
