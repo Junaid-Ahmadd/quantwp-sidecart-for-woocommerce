@@ -143,7 +143,6 @@ class Woo_Side_Cart_Settings
                 'sanitize_callback' => 'sanitize_key' // Secure text input
             )
         );
-
     }
 
     /**
@@ -170,11 +169,32 @@ class Woo_Side_Cart_Settings
             $class = ($selected_icon === $key) ? 'selected' : '';
             echo '<label class="side-cart-option ' . esc_attr($class) . '">';
             echo '<input type="radio" name="woo_side_cart_icon" value="' . esc_attr($key) . '" ' . checked($selected_icon, $key, false) . '>';
-            echo $svg;
+            // Define allowed SVG tags for wp_kses
+            $allowed_svg = array(
+                'svg' => array(
+                    'viewbox' => true,
+                    'fill' => true,
+                    'stroke' => true,
+                    'stroke-width' => true,
+                    'stroke-linecap' => true,
+                    'stroke-linejoin' => true,
+                    'aria-hidden' => true,
+                    'class' => true,
+                    'width' => true,
+                    'height' => true
+                ),
+                'path'   => array('d' => true, 'fill' => true, 'stroke' => true),
+                'circle' => array('cx' => true, 'cy' => true, 'r' => true),
+                'g'      => array('fill' => true),
+                'rect'   => array('x' => true, 'y' => true, 'width' => true, 'height' => true, 'rx' => true),
+                'line'   => array('x1' => true, 'y1' => true, 'x2' => true, 'y2' => true),
+                'polyline' => array('points' => true),
+            );
+
+            echo wp_kses($svg, $allowed_svg);
             echo '</label>';
         }
         echo '</div>';
-
     }
 
 
@@ -187,15 +207,6 @@ class Woo_Side_Cart_Settings
             return;
         }
 
-        // Check if settings were saved
-        if (isset($_GET['settings-updated'])) {
-            add_settings_error(
-                'woo_side_cart_messages',
-                'woo_side_cart_message',
-                __('Settings saved successfully.', 'woo-side-cart'),
-                'success'
-            );
-        }
 
         settings_errors('woo_side_cart_messages');
 ?>
@@ -268,8 +279,9 @@ class Woo_Side_Cart_Settings
                             <p class="description">
                                 <?php
                                 printf(
+                                    /* translators: %s: Currency symbol (e.g. USD, EUR) */
                                     esc_html__('Minimum cart amount for free shipping. Enter amount in %s.', 'woo-side-cart'),
-                                    get_woocommerce_currency()
+                                    esc_html(get_woocommerce_currency())
                                 );
                                 ?>
                             </p>
@@ -337,20 +349,24 @@ class Woo_Side_Cart_Settings
 <?php
     }
 
-    public function enqueue_admin_assets($hook)
+public function enqueue_admin_assets($hook)
 {
-    // 1. Check if we are on the Side Cart settings page
-    // The $hook string for a sub-page usually looks like 'settings_page_woo_side_cart_settings'
-    // You can also check if $_GET['page'] matches your slug
-    if (isset($_GET['page']) && $_GET['page'] === $this->page_slug) {
-        
-        wp_enqueue_script(
-            'woo-side-cart-admin', // Unique Handle
-            WOO_SIDE_CART_URL . 'assets/js/admin.js', // Path to file
-            array('jquery'), // Dependency
-            WOO_SIDE_CART_VERSION,
-            true // Load in footer
-        );
+    // 1. Define your specific page hook
+    // The format is usually: 'settings_page_' + your_menu_slug
+    $my_settings_page = 'settings_page_woo_side_cart_settings';
+
+    // 2. Check if the current page matches YOUR settings page
+    if ( $hook !== $my_settings_page ) {
+        return;
     }
+
+    // 3. Safe to enqueue
+    wp_enqueue_script(
+        'woo-side-cart-admin',
+        WOO_SIDE_CART_URL . 'assets/js/admin.js',
+        array('jquery'),
+        WOO_SIDE_CART_VERSION,
+        true
+    );
 }
 }

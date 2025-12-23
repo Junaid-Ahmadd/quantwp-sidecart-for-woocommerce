@@ -172,18 +172,18 @@ class Woo_Side_Cart_Cross_Sells
         <div class="woo-cross-sells-wrapper">
             <div class="cross-sells-header">
                 <h4><?php esc_html_e('You may also like', 'woo-side-cart'); ?></h4>
-              
+
             </div>
 
 
-         
-            <div class="cross-sells-carousel"> 
+
+            <div class="cross-sells-carousel">
                 <button class="carousel-prev" aria-label="Previous">&lsaquo;</button>
                 <div class="carousel-track">
                     <?php foreach ($products as $product) : ?>
                         <div class="cross-sell-item">
                             <a href="<?php echo esc_url($product->get_permalink()); ?>" class="product-image">
-                                <?php echo $product->get_image('woocommerce_thumbnail'); ?>
+                                <?php echo wp_kses_post($_product->get_image('thumbnail')); ?>
                             </a>
 
                             <div class="product-details">
@@ -192,7 +192,7 @@ class Woo_Side_Cart_Cross_Sells
                                 </a>
 
                                 <div class="product-price">
-                                    <?php echo $product->get_price_html(); ?>
+                                    <?php echo wp_kses_post($product->get_price_html()); ?>
                                 </div>
 
                                 <a href="<?php echo esc_url('?add-to-cart=' . $product->get_id()); ?>"

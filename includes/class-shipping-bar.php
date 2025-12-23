@@ -125,8 +125,9 @@ class Woo_Side_Cart_Shipping_Bar
                     <span class="success-message">
                         <?php
                         printf(
+                            /* translators: %s: The text 'Free Shipping' in bold */
                             esc_html__('🎉 You qualify for %s', 'woo-side-cart'),
-                            '<strong>' . esc_html( 'Free Shipping', 'woo-side-cart' ) . '</strong>'
+                            '<strong>' . esc_html__('Free Shipping', 'woo-side-cart') . '</strong>'
                         );
                         ?>
                     </span>
@@ -134,8 +135,9 @@ class Woo_Side_Cart_Shipping_Bar
                     <span class="progress-message">
                         <?php
                         printf(
+                            /* translators: %s: The remaining amount required for free shipping (e.g. $10.00) */
                             esc_html__('Add %s more to get FREE shipping', 'woo-side-cart'),
-                            '<strong>' . wc_price($progress['remaining']) . '</strong>'
+                            '<strong>' . wp_kses_post(wc_price($progress['remaining'])) . '</strong>'
                         );
                         ?>
                     </span>

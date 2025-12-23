@@ -1,20 +1,20 @@
 <?php
 
-   /**
-    * Plugin Name: Woo Side Cart
-    * Plugin URI: https://github.com/Junaid-Ahmadd/woo-side-cart
-    * Description: A lightweight WooCommerce side cart with AJAX updates, free shipping progress bar, and cross-sell carousel.
-    * Version: 1.0.0
-    * Requires at least: 5.8
-    * Requires PHP: 7.4
-    * Author: Junaid Ahmad
-    * Author URI: https://github.com/Junaid-Ahmadd
-    * License: GPL v2 or later
-    * License URI: https://www.gnu.org/licenses/gpl-2.0.html
-    * Text Domain: woo-side-cart
-    * Domain Path: /languages
-    * Requires Plugins: woocommerce
-    */
+/**
+ * Plugin Name: Cart Booster for WooCommerce
+ * Plugin URI: https://github.com/Junaid-Ahmadd/cart-booster-for-woocommerce
+ * Description: A lightweight WooCommerce side cart with AJAX updates, free shipping progress bar, and cross-sell carousel.
+ * Version: 1.0.0
+ * Requires at least: 5.8
+ * Requires PHP: 7.4
+ * Author: Junaid Ahmad
+ * Author URI: https://github.com/Junaid-Ahmadd
+ * License: GPL v2 or later
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
+ * Text Domain: woo-side-cart
+ * Domain Path: /languages
+ * Requires Plugins: woocommerce
+ */
 
 
 if (!defined('ABSPATH')) {
@@ -26,13 +26,6 @@ if (!defined('ABSPATH')) {
 define('WOO_SIDE_CART_VERSION', '1.0.0');
 define('WOO_SIDE_CART_PATH', plugin_dir_path(__FILE__));
 define('WOO_SIDE_CART_URL', plugin_dir_url(__FILE__));
-
-// Add after your constants, before the WooCommerce check:
-
-function woo_side_cart_load_textdomain() {
-    load_plugin_textdomain('woo-side-cart', false, dirname(plugin_basename(__FILE__)) . '/languages');
-}
-add_action('plugins_loaded', 'woo_side_cart_load_textdomain', 5);
 
 
 // Check if WooCommerce is active

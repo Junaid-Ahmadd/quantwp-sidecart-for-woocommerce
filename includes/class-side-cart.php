@@ -80,7 +80,16 @@ class Woo_Side_Cart_Main
         $svg = isset($icons[$selected_icon_key]) ? $icons[$selected_icon_key] : $icons['cart-classic'];
 ?>
         <a href="#" class="woo-side-cart-trigger" aria-label="<?php esc_attr_e('View Cart', 'woo-side-cart'); ?>">
-            <?php echo $svg; ?>
+            <?php
+            $allowed_svg = array(
+                'svg' => array('viewbox' => true, 'fill' => true, 'stroke' => true, 'stroke-width' => true, 'stroke-linecap' => true, 'stroke-linejoin' => true, 'aria-hidden' => true, 'class' => true, 'width' => true, 'height' => true),
+                'path' => array('d' => true, 'fill' => true, 'stroke' => true),
+                'circle' => array('cx' => true, 'cy' => true, 'r' => true),
+                'line' => array('x1' => true, 'y1' => true, 'x2' => true, 'y2' => true),
+                'rect' => array('x' => true, 'y' => true, 'width' => true, 'height' => true, 'rx' => true)
+            );
+            echo wp_kses($svg, $allowed_svg);
+            ?>
         </a>
 
         <div class="woo-side-cart-overlay"></div>
@@ -105,8 +114,9 @@ class Woo_Side_Cart_Main
             <h4 class="woo-side-cart-title">
                 <?php
                 printf(
+                    /* translators: %d: The number of items in the cart */
                     esc_html__('Cart (%d)', 'woo-side-cart'),
-                    $cart->get_cart_contents_count()
+                    absint($cart->get_cart_contents_count())
                 );
                 ?>
             </h4>
@@ -130,7 +140,7 @@ class Woo_Side_Cart_Main
                     ?>
                     <div class="woo-side-cart-item">
                         <div class="woo-side-cart-item-image">
-                            <?php echo $_product->get_image('thumbnail'); ?>
+                            <?php echo wp_kses_post($_product->get_image('thumbnail')); ?>
                         </div>
 
                         <div class="woo-side-cart-item-details">
@@ -171,11 +181,11 @@ class Woo_Side_Cart_Main
                                 $active_subtotal = $cart->get_product_subtotal($_product, $cart_item['quantity']);
 
                                 // 4. Output: <del>Regular</del> <ins>Sale</ins>
-                                echo '<del class="original-price">' . $regular_subtotal . '</del>';
-                                echo '<ins class="sale-price" style="text-decoration: none; margin-left: 5px;">' . $active_subtotal . '</ins>';
+                                echo '<del class="original-price">' . wp_kses_post($regular_subtotal) . '</del>';
+                                echo '<ins class="sale-price" style="text-decoration: none; margin-left: 5px;">' . wp_kses_post($active_subtotal) . '</ins>';
                             } else {
                                 // Not on sale? Just show the standard subtotal
-                                echo $cart->get_product_subtotal($_product, $cart_item['quantity']);
+                                echo wp_kses_post($cart->get_product_subtotal($_product, $cart_item['quantity']));
                             }
                             ?>
                         </div>
@@ -198,7 +208,7 @@ class Woo_Side_Cart_Main
             <?php if ($cart_has_items) : ?>
                 <div class="cart-subtotal">
                     <span><?php esc_html_e('Subtotal:', 'woo-side-cart'); ?></span>
-                    <span><?php echo wc_price($cart->get_subtotal()); ?></span>
+                    <span><?php echo wp_kses_post(wc_price($cart->get_subtotal())); ?></span>
                 </div>
 
                 <a href="<?php echo esc_url(wc_get_checkout_url()); ?>" class="checkout-button">
@@ -232,7 +242,8 @@ class Woo_Side_Cart_Main
             wp_send_json_error(array('message' => 'Missing data'));
         }
 
-        $cart_key = sanitize_text_field($_POST['cart_key']);
+        // Use wp_unslash first, then sanitize
+        $cart_key = sanitize_text_field(wp_unslash($_POST['cart_key']));
         $new_qty = absint($_POST['new_qty']);
 
         if ($new_qty === 0) {
@@ -243,12 +254,15 @@ class Woo_Side_Cart_Main
 
         WC()->cart->calculate_totals();
 
-        // Get all fragments
-        $fragments = apply_filters('woocommerce_add_to_cart_fragments', array());
+        // 1. Get your Side Cart HTML
+        $fragments = array();
+        $fragments = $this->cart_fragment($fragments);
 
+        // 2. Send Success with EXTRA data
         wp_send_json_success(array(
             'fragments' => $fragments,
-            'cart_hash' => WC()->cart->get_cart_hash()
+            'cart_hash' => WC()->cart->get_cart_hash(),
+            'cart_count' => WC()->cart->get_cart_contents_count() // <--- Add this!
         ));
     }
 }
