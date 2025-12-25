@@ -74,7 +74,7 @@ class Woo_Side_Cart_Main
     public function render_cart_html()
     {
 
-    ?>
+?>
 
         <div class="woo-side-cart-overlay"></div>
 
@@ -215,63 +215,71 @@ class Woo_Side_Cart_Main
     <?php
         $fragments['.woo-side-cart-wrapper'] = ob_get_clean();
 
+        // 2. Update the Cart Count Badge (ALWAYS SHOW)
+        $count = WC()->cart->get_cart_contents_count();
+        $fragments['.cart-count-badge'] = '<span class="cart-count-badge">' . esc_html($count) . '</span>';
+
         return $fragments;
     }
 
 
-public function ajax_update_cart()
-{
-    check_ajax_referer('woo_side_cart_nonce', 'nonce');
+    public function ajax_update_cart()
+    {
+        check_ajax_referer('woo_side_cart_nonce', 'nonce');
 
-    if (!isset($_POST['cart_key']) || !isset($_POST['new_qty'])) {
-        wp_send_json_error(array('message' => 'Missing data'));
-    }
+        if (!isset($_POST['cart_key']) || !isset($_POST['new_qty'])) {
+            wp_send_json_error(array('message' => 'Missing data'));
+        }
 
-    $cart_key = sanitize_text_field(wp_unslash($_POST['cart_key']));
-    $new_qty = absint($_POST['new_qty']);
+        $cart_key = sanitize_text_field(wp_unslash($_POST['cart_key']));
+        $new_qty = absint($_POST['new_qty']);
 
-    if ($new_qty === 0) {
-        WC()->cart->remove_cart_item($cart_key);
-    } else {
-        WC()->cart->set_quantity($cart_key, $new_qty);
-    }
+        if ($new_qty === 0) {
+            WC()->cart->remove_cart_item($cart_key);
+        } else {
+            WC()->cart->set_quantity($cart_key, $new_qty);
+        }
 
-    WC()->cart->calculate_totals();
+        WC()->cart->calculate_totals();
 
-    // Manually build all fragments by calling your own methods
-    $fragments = array();
-    
-    // Cart content fragment
-    ob_start();
+        // Manually build all fragments by calling your own methods
+        $fragments = array();
+
+        // Cart content fragment
+        ob_start();
     ?>
-    <div class="woo-side-cart-wrapper">
-        <?php echo $this->get_cart_content_html(); ?>
-    </div>
+        <div class="woo-side-cart-wrapper">
+            <?php echo $this->get_cart_content_html(); ?>
+        </div>
     <?php
-    $fragments['.woo-side-cart-wrapper'] = ob_get_clean();
-    
-    // Trigger other classes to add their fragments
-    // Shipping bar
-    $shipping_bar = Woo_Side_Cart_Shipping_Bar::get_instance();
-    ob_start();
-    $shipping_bar->render_shipping_bar_content();
-    $fragments['.woo-shipping-bar-wrapper'] = ob_get_clean();
-    
-    // Cross-sells
-    $cross_sells = Woo_Side_Cart_Cross_Sells::get_instance();
-    $fragments['.woo-cross-sells-wrapper'] = $cross_sells->render_cross_sells();
+        $fragments['.woo-side-cart-wrapper'] = ob_get_clean();
 
-    // Allow other plugins to add their own fragments
-    $fragments = apply_filters('cart_booster_fragments', $fragments);
+        //  Update Cart Count Badge fragment 
+        $count = WC()->cart->get_cart_contents_count();
+        $fragments['.cart-count-badge'] = '<span class="cart-count-badge">' . esc_html($count) . '</span>';
 
-    wp_send_json_success(array(
-        'fragments' => $fragments,
-        'cart_hash' => WC()->cart->get_cart_hash(),
-        'cart_count' => WC()->cart->get_cart_contents_count()
-    ));
-}
+        // Trigger other classes to add their fragments
+        // Shipping bar
+        $shipping_bar = Woo_Side_Cart_Shipping_Bar::get_instance();
+        ob_start();
+        $shipping_bar->render_shipping_bar_content();
+        $fragments['.woo-shipping-bar-wrapper'] = ob_get_clean();
 
-/**
+        // Cross-sells
+        $cross_sells = Woo_Side_Cart_Cross_Sells::get_instance();
+        $fragments['.woo-cross-sells-wrapper'] = $cross_sells->render_cross_sells();
+
+        // Allow other plugins to add their own fragments
+        $fragments = apply_filters('cart_booster_fragments', $fragments);
+
+        wp_send_json_success(array(
+            'fragments' => $fragments,
+            'cart_hash' => WC()->cart->get_cart_hash(),
+            'cart_count' => WC()->cart->get_cart_contents_count()
+        ));
+    }
+
+    /**
      * Shortcode for cart icon: [cart_booster_icon]
      */
     public function cart_icon_shortcode()
@@ -290,15 +298,14 @@ public function ajax_update_cart()
         );
 
         ob_start();
-        ?>
+    ?>
         <a href="#" class="woo-side-cart-trigger" aria-label="<?php esc_attr_e('View Cart', 'cart-booster-for-woocommerce'); ?>">
             <?php echo wp_kses($svg, $allowed_svg); ?>
             <?php if ($cart_count > 0) : ?>
                 <span class="cart-count-badge"><?php echo esc_html($cart_count); ?></span>
             <?php endif; ?>
         </a>
-        <?php
+<?php
         return ob_get_clean();
     }
-
 }
