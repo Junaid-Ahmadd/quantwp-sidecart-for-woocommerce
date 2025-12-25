@@ -325,6 +325,9 @@ public function ajax_update_cart()
     $cross_sells = Woo_Side_Cart_Cross_Sells::get_instance();
     $fragments['.woo-cross-sells-wrapper'] = $cross_sells->render_cross_sells();
 
+    // Allow other plugins to add their own fragments
+    $fragments = apply_filters('cart_booster_fragments', $fragments);
+
     wp_send_json_success(array(
         'fragments' => $fragments,
         'cart_hash' => WC()->cart->get_cart_hash(),
