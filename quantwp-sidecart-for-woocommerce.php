@@ -55,7 +55,7 @@ function quantwp_side_cart_init()
     }
 
     // Load classes
-    require_once QUANTWP_PATH . 'includes/quantwp-class-side-cart.php';
+    require_once QUANTWP_PATH . 'includes/quantwp-class-sidecart.php';
     require_once QUANTWP_PATH . 'includes/quantwp-class-shipping-bar.php';
     require_once QUANTWP_PATH . 'includes/quantwp-class-cross-sells.php';
     require_once QUANTWP_PATH . 'includes/quantwp-class-settings.php';

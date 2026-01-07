@@ -154,15 +154,6 @@ class QuantWP_SideCart_Settings
         // Fetch secure icons from this class using self::
         $icons = self::get_cart_icons();
 
-        // Inline CSS for the admin grid
-        echo '<style>
-            .side-cart-icon-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(50px, 1fr)); gap: 10px; max-width: 550px; margin-top: 5px; }
-            .side-cart-option { border: 1px solid #ccc; border-radius: 4px; padding: 10px; cursor: pointer; display: flex; justify-content: center; align-items: center; background: #fff; height: 40px; transition: all 0.2s ease; }
-            .side-cart-option:hover { border-color: #2271b1; background: #f0f6fc; }
-            .side-cart-option.selected { border-color: #2271b1; background: #2271b1; color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-            .side-cart-option svg { width: 24px; height: 24px; }
-            .side-cart-option input { display: none; }
-        </style>';
 
         echo '<div class="side-cart-icon-grid">';
         foreach ($icons as $key => $svg) {
@@ -403,6 +394,14 @@ class QuantWP_SideCart_Settings
             array('jquery'),
             QUANTWP_VERSION,
             true
+        );
+
+        // Enqueue admin CSS
+        wp_enqueue_style(
+            'quantwp-sidecart-admin',
+            QUANTWP_URL . 'assets/css/admin.css',
+            array(),
+            QUANTWP_VERSION
         );
     }
 }

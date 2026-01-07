@@ -1,5 +1,5 @@
 === QuantWP – Side Cart for WooCommerce ===
-Contributors: Junaid Ahmad
+Contributors: junaidahmadd
 Tags: woocommerce, cart, side cart, ajax cart
 Requires at least: 5.8
 Tested up to: 6.9
