@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+
+# OS specific files
+.DS_Store
+Thumbs.db
+
+# SVN metadata (since replacing with Git)
+.svn/
+
+# Agentic / Assistant Metadata
+Skill/
+.gemini/
+.agents/
+.agent/
+_agents/
+_agent/
+
+# Local/IDE specific
+.vscode/
+.idea/
+
+# Common log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+bun.lockb

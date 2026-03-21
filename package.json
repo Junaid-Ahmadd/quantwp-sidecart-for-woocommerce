@@ -1,0 +1,16 @@
+{
+  "name": "quantwp-sidecart",
+  "version": "1.0.3",
+  "private": true,
+  "scripts": {
+    "build:js": "bunx terser assets/js/side-cart.js -o assets/js/side-cart.min.js -c -m && bunx terser assets/js/cross-sells.js -o assets/js/cross-sells.min.js -c -m && bunx terser assets/js/admin.js -o assets/js/admin.min.js -c -m",
+    "build:css": "bunx clean-css-cli -o assets/css/side-cart.min.css assets/css/side-cart.css && bunx clean-css-cli -o assets/css/admin.min.css assets/css/admin.css",
+    "build": "bun run build:js && bun run build:css",
+    "watch": "bun run build.js"
+  },
+  "devDependencies": {
+    "clean-css-cli": "^5.6.3",
+    "lightningcss": "^1.31.1",
+    "terser": "^5.46.0"
+  }
+}
