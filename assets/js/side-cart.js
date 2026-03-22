@@ -251,14 +251,17 @@ jQuery(document).ready(function ($) {
   }
 
   function fetchCart() {
-    storeApiFetch('/cart', 'GET')
+    return storeApiFetch('/cart', 'GET')
       .then(function (cart) {
         updateCartDOM(cart);
         updateShippingBar(cart);
         extractCartIds(cart);
         $(document.body).trigger('wc_fragments_refreshed');
+        return cart;
       })
-      .catch(function (err) { console.warn('[QuantWP] fetchCart failed:', err); });
+      .catch(function (err) {
+        return null;
+      });
   }
 
   function updateItem(cartKey, newQty) {
@@ -271,7 +274,7 @@ jQuery(document).ready(function ($) {
         updateShippingBar(cart);
         $(document.body).trigger('wc_fragments_refreshed');
       })
-      .catch(function (err) { console.warn('[QuantWP] updateItem failed:', err); fetchCart(); })
+      .catch(function (err) { fetchCart(); })
       .finally(function () { isUpdating = false; });
   }
 
@@ -283,15 +286,11 @@ jQuery(document).ready(function ($) {
       .then(function (cart) {
         updateCartDOM(cart);
         updateShippingBar(cart);
-        console.log('[QuantWP] removeItem: before extractCartIds, ids:', JSON.stringify(window.quantwpCartProductIds));
         extractCartIds(cart);
-        console.log('[QuantWP] removeItem: after extractCartIds, ids:', JSON.stringify(window.quantwpCartProductIds));
-        console.log('[QuantWP] removeItem: about to trigger quantwp_cart_item_removed');
         $(document.body).trigger('wc_fragments_refreshed');
         $(document.body).trigger('quantwp_cart_item_removed');
-        console.log('[QuantWP] removeItem: quantwp_cart_item_removed triggered');
       })
-      .catch(function (err) { console.warn('[QuantWP] removeItem failed:', err); fetchCart(); })
+      .catch(function (err) { fetchCart(); })
       .finally(function () { isUpdating = false; });
   }
 
@@ -306,8 +305,10 @@ jQuery(document).ready(function ($) {
   });
 
   $(document.body).on('added_to_cart', function () {
-    fetchCart();
     if (quantwpData.autoOpen) $('body').addClass('quantwp-sidecart-open');
+    fetchCart().then(function (cart) {
+      if (cart) $(document.body).trigger('quantwp_cart_synced');
+    });
   });
 
   // Cross-sell adds trigger this instead of added_to_cart to avoid
@@ -317,8 +318,10 @@ jQuery(document).ready(function ($) {
   });
 
   document.addEventListener('wc-blocks_added_to_cart', function () {
-    fetchCart();
     if (quantwpData.autoOpen) $('body').addClass('quantwp-sidecart-open');
+    fetchCart().then(function (cart) {
+      if (cart) $(document.body).trigger('quantwp_cart_synced');
+    });
   });
 
   $(document).on('click', '.qty-btn', function (e) {
@@ -338,14 +341,18 @@ jQuery(document).ready(function ($) {
   });
 
   // Handle standard page reload add-to-cart events
-  if (document.cookie.indexOf('quantwp_added_to_cart=1') !== -1) {
-    // Delete the cookie immediately
+  var autoOpenOnLoad = document.cookie.indexOf('quantwp_added_to_cart=1') !== -1;
+  if (autoOpenOnLoad) {
     document.cookie = "quantwp_added_to_cart=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     if (quantwpData.autoOpen) {
       $('body').addClass('quantwp-sidecart-open');
     }
   }
 
-  fetchCart();
+  fetchCart().then(function (cart) {
+    if (autoOpenOnLoad && cart) {
+      $(document.body).trigger('quantwp_cart_synced');
+    }
+  });
 
 });

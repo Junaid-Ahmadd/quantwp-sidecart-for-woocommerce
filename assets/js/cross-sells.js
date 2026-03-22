@@ -103,20 +103,17 @@ jQuery(document).ready(function ($) {
     // ─── Load cross-sell product cards ────────────────────────────────────────
     function loadCrossSells() {
         var $wrapper = $('.quantwp-cross-sells-wrapper');
-        if (!$wrapper.length) { console.log('[QuantWP] loadCrossSells: no wrapper'); return; }
+        if (!$wrapper.length) return;
 
-        if ($('.quantwp-empty-state').length > 0) { console.log('[QuantWP] loadCrossSells: empty state'); $wrapper.hide(); return; }
+        if ($('.quantwp-empty-state').length > 0) { $wrapper.hide(); return; }
 
-        console.log('[QuantWP] loadCrossSells: loaded state =', $wrapper.data('loaded'));
-        if ($wrapper.data('loaded') === 1) { console.log('[QuantWP] loadCrossSells: skipped — already loaded'); $wrapper.show(); return; }
+        if ($wrapper.data('loaded') === 1) { $wrapper.show(); return; }
 
         $wrapper.data('loaded', 1);
-        console.log('[QuantWP] loadCrossSells: fetching API...');
 
         fetch(quantwpCrossSells.crossSellsApiUrl, { credentials: 'same-origin' })
             .then(function (r) { return r.json(); })
             .then(function (data) {
-                console.log('[QuantWP] loadCrossSells: API returned', data.products ? data.products.length : 0, 'products');
 
                 if (!data.products || !data.products.length) {
                     $wrapper.html('').hide();
@@ -126,19 +123,15 @@ jQuery(document).ready(function ($) {
                 var cartIds = window.quantwpCartProductIds || [];
                 var cartPermalinks = window.quantwpCartPermalinks || [];
 
-                console.log('[QuantWP] loadCrossSells: cartIds at filter time:', JSON.stringify(cartIds));
-                console.log('[QuantWP] loadCrossSells: cartPermalinks at filter time:', JSON.stringify(cartPermalinks));
-
                 var products = data.products.filter(function (p) {
                     var inAdded = addedToCartIds.indexOf(p.id) !== -1;
                     var inCart = cartIds.indexOf(p.id) !== -1;
                     var basePath = p.permalink ? p.permalink.split('?')[0].replace(/\/$/, '') : '';
                     var inPermalinks = basePath ? cartPermalinks.indexOf(basePath) !== -1 : false;
-                    console.log('[QuantWP] product', p.id, p.name, '— inAdded:', inAdded, '| inCart:', inCart, '| inPermalinks:', inPermalinks, '| shown:', !inAdded && !inCart && !inPermalinks);
                     return !inAdded && !inCart && !inPermalinks;
                 });
 
-                console.log('[QuantWP] loadCrossSells: after filter,', products.length, 'products shown');
+
 
                 if (!products.length) {
                     $wrapper.html('').hide();
@@ -158,7 +151,6 @@ jQuery(document).ready(function ($) {
                 initCarousel();
             })
             .catch(function (err) {
-                console.warn('[QuantWP] loadCrossSells fetch failed:', err);
                 $wrapper.data('loaded', 0);
             });
     }
@@ -303,7 +295,6 @@ jQuery(document).ready(function ($) {
                     $(document.body).trigger('quantwp_cross_sell_added');
                 })
                 .catch(function (err) {
-                    console.warn('[QuantWP] Variation add-to-cart failed:', err);
                     $btn.prop('disabled', false).text('Try Again');
                 });
         });
@@ -334,7 +325,6 @@ jQuery(document).ready(function ($) {
                 openVariationLightbox(productId, title, data, cardImage);
             })
             .catch(function (err) {
-                console.warn('[QuantWP] Variation fetch failed:', err);
                 $btn.prop('disabled', false).text('ADD');
             });
     });
@@ -374,7 +364,6 @@ jQuery(document).ready(function ($) {
                 $(document.body).trigger('quantwp_cross_sell_added');
             })
             .catch(function (err) {
-                console.warn('[QuantWP] Add-to-cart failed:', err);
                 $btn.prop('disabled', false).text('ADD');
             });
     });
@@ -463,7 +452,7 @@ jQuery(document).ready(function ($) {
     });
 
     // External add to cart (product page, blocks) — reload carousel
-    $(document.body).on('added_to_cart', function () {
+    $(document.body).on('quantwp_cart_synced', function () {
         $('.quantwp-cross-sells-wrapper').data('loaded', 0);
         if ($('body').hasClass('quantwp-sidecart-open')) {
             loadCrossSells();
