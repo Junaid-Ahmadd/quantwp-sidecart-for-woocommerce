@@ -256,7 +256,6 @@ jQuery(document).ready(function ($) {
         updateCartDOM(cart);
         updateShippingBar(cart);
         extractCartIds(cart);
-        $(document.body).trigger('wc_fragments_refreshed');
         return cart;
       })
       .catch(function (err) {
@@ -272,7 +271,6 @@ jQuery(document).ready(function ($) {
       .then(function (cart) {
         updateCartDOM(cart);
         updateShippingBar(cart);
-        $(document.body).trigger('wc_fragments_refreshed');
       })
       .catch(function (err) { fetchCart(); })
       .finally(function () { isUpdating = false; });
@@ -287,7 +285,6 @@ jQuery(document).ready(function ($) {
         updateCartDOM(cart);
         updateShippingBar(cart);
         extractCartIds(cart);
-        $(document.body).trigger('wc_fragments_refreshed');
         $(document.body).trigger('quantwp_cart_item_removed');
       })
       .catch(function (err) { fetchCart(); })

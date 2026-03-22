@@ -65,7 +65,7 @@ class QuantWP_SideCart_Analytics
         register_rest_route('quantwp/v1', '/analytics/add', array(
             'methods'             => WP_REST_Server::CREATABLE,
             'callback'            => array($this, 'rest_track_add'),
-            'permission_callback' => '__return_true',
+            'permission_callback' => array($this, 'verify_nonce'),
             'args'                => array(
                 'product_id' => array(
                     'required'          => true,
@@ -90,6 +90,31 @@ class QuantWP_SideCart_Analytics
         ));
     }
 
+    /**
+ * Verify the WP REST nonce sent by JS via X-WP-Nonce header.
+ * WordPress sets current_user on REST requests based on this nonce —
+ * if the nonce is invalid the request is rejected before our callback runs.
+ * For logged-out users, wp_create_nonce() still generates a valid nonce
+ * tied to user 0, so this works for guests too.
+ */
+    public function verify_nonce()
+    {
+        // WordPress REST API already authenticates the nonce from the
+        // X-WP-Nonce header before permission_callback runs.
+        // If we reach here with a valid nonce, current_user is set correctly.
+        // We just need to confirm the nonce was actually present and valid.
+        $nonce = isset($_SERVER['HTTP_X_WP_NONCE']) ? $_SERVER['HTTP_X_WP_NONCE'] : '';
+        if (empty($nonce)) {
+        return new WP_Error('rest_forbidden', 'Nonce missing', array('status' => 403));
+        }
+
+        $result = wp_verify_nonce($nonce, 'wp_rest');
+        if (!$result) {
+        return new WP_Error('rest_forbidden', 'Invalid nonce', array('status' => 403));
+        }
+
+        return true;
+    }
     // -------------------------------------------------------------------------
     // Event recording helpers
     // -------------------------------------------------------------------------
@@ -121,10 +146,6 @@ class QuantWP_SideCart_Analytics
 
     public function rest_track_add(WP_REST_Request $request)
     {
-        // Basic bot protection — must have a valid WC session cookie
-    if (!isset($_COOKIE) || empty($_COOKIE)) {
-        return rest_ensure_response(array('success' => false));
-    }
 
         $product_id = $request->get_param('product_id');
 
