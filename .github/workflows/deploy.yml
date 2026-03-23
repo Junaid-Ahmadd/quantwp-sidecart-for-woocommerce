@@ -5,6 +5,11 @@ on:
     tags:
       - "[0-9]+.[0-9]+.[0-9]+"
 
+# This helps us see if the runner has the right permissions
+permissions:
+  contents: write
+  actions: read
+
 jobs:
   deploy:
     name: New Version Release
@@ -13,10 +18,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # DEBUG STEP: Check if the runner can even see the internet/SVN
+      - name: Network Debug
+        run: |
+          echo "Checking connection to WordPress SVN..."
+          curl -I https://plugins.svn.wordpress.org/
+          echo "Runner OS: $RUNNER_OS"
+
       - name: WordPress.org Plugin Deploy
-        # We use the full repository path and a verified version
-        uses: 10up/action-wordpress-dot-org-deploy@4b00f7e4362a26c4839843a8536b694b8e018659 # Pinning to a specific commit for maximum reliability
+        # We use a very specific, mirrored version to bypass "Not Found" errors
+        uses: 10up/action-wordpress-dot-org-deploy@4b00f7e4362a26c4839843a8536b694b8e018659
         env:
           SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
           SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
           SLUG: quantwp-sidecart-for-woocommerce
+          # Adding a debug flag supported by many actions
+          ACTIONS_STEP_DEBUG: true

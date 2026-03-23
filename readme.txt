@@ -4,7 +4,7 @@ Tags: woocommerce, cart, side cart, ajax cart
 Requires at least: 5.8
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 3.0.13
+Stable tag: 3.0.14
 License: GPLv2 or later
 
 A lightweight WooCommerce side cart with free shipping bar and cross-sells.
