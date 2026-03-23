@@ -1,6 +1,6 @@
 {
   "name": "quantwp-sidecart",
-  "version": "3.1.9",
+  "version": "3.0.10",
   "private": true,
   "scripts": {
     "build:js": "bunx terser assets/js/side-cart.js -o assets/js/side-cart.min.js -c -m && bunx terser assets/js/cross-sells.js -o assets/js/cross-sells.min.js -c -m && bunx terser assets/js/admin.js -o assets/js/admin.min.js -c -m",
