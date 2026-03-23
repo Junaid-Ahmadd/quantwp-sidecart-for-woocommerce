@@ -4,7 +4,7 @@ Tags: woocommerce, cart, side cart, ajax cart
 Requires at least: 5.8
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 3.0.8
+Stable tag: 3.1.9
 License: GPLv2 or later
 
 A lightweight WooCommerce side cart with free shipping bar and cross-sells.
@@ -50,6 +50,9 @@ If a customer has multiple items in their cart, the total number of cross-sell r
 You can use `[quantwp_cart_shortcode]` anywhere shortcodes are accepted. It is compatible with all major theme header builders and page builders like Elementor.
 
 == Changelog ==
+
+= 3.1.9 =
+* Fix: Implemented debouncing on quantity update
 
 = 3.0.8 =
 * Fix: Updated deploy.js file
