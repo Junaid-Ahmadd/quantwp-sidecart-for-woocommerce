@@ -84,7 +84,11 @@ async function start() {
 
         // Add version updates to Beta
         execSync('git add .');
-        execSync(`git commit -m "Version bump to ${newVersion}" || true`);
+        try {
+            execSync(`git commit -m "Version bump to ${newVersion}"`);
+        } catch (e) {
+            console.log('   ℹ️ No changes to commit in Beta.');
+        }
 
         // Switch to main and merge
         console.log('🔀 Merging Beta into main...');
@@ -97,7 +101,11 @@ async function start() {
 
         // Add built assets
         execSync('git add .');
-        execSync(`git commit -m "Release version ${newVersion}" || true`);
+        try {
+            execSync(`git commit -m "Release version ${newVersion}"`);
+        } catch (e) {
+            console.log('   ℹ️ No changes to commit in main.');
+        }
 
         // 5. Tag and Push
         console.log('🏷️ Tagging and pushing...');
