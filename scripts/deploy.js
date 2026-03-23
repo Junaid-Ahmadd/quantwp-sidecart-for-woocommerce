@@ -53,6 +53,13 @@ async function start() {
         process.exit(0);
     }
 
+    // 1b. Get Commit Message
+    const commitMessage = await new Promise(resolve => {
+        rl.question(`❓ Enter commit message for version ${newVersion} (leave blank for default): `, (answer) => {
+            resolve(answer.trim() || `Release version ${newVersion}`);
+        });
+    });
+
     try {
         // 2. Update Files
         console.log('📝 Updating version numbers in files...');
@@ -85,7 +92,7 @@ async function start() {
         // Add version updates to Beta
         execSync('git add .');
         try {
-            execSync(`git commit -m "Version bump to ${newVersion}"`);
+            execSync(`git commit -m "${commitMessage}"`);
         } catch (e) {
             console.log('   ℹ️ No changes to commit in Beta.');
         }
@@ -102,7 +109,7 @@ async function start() {
         // Add built assets
         execSync('git add .');
         try {
-            execSync(`git commit -m "Release version ${newVersion}"`);
+            execSync(`git commit -m "${commitMessage}"`);
         } catch (e) {
             console.log('   ℹ️ No changes to commit in main.');
         }
