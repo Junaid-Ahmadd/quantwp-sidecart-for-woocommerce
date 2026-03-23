@@ -27,5 +27,4 @@ yarn-error.log*
 bun.lockb
 
 # Local Deployment
-.github/workflows/deploy.yml
 scripts/
