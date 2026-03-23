@@ -321,14 +321,44 @@ jQuery(document).ready(function ($) {
     });
   });
 
+  let debounceTimer;
+  let pendingUpdates = {}; // Tracks quantities locally before sending to server
+
   $(document).on('click', '.qty-btn', function (e) {
     e.preventDefault();
-    if (isUpdating) return;
+
     var $wrap = $(this).closest('.quantity-controls');
     var cartKey = $wrap.data('cart-key');
-    var newQty = parseInt($wrap.find('.qty-input').val(), 10) + parseInt($(this).data('qty-change'), 10);
-    if (newQty < 0) newQty = 0;
-    newQty === 0 ? removeItem(cartKey) : updateItem(cartKey, newQty);
+    var $input = $wrap.find('.qty-input');
+
+    // 1. Calculate the change
+    var currentQty = pendingUpdates[cartKey] !== undefined
+      ? pendingUpdates[cartKey]
+      : parseInt($input.val(), 10);
+
+    var change = parseInt($(this).data('qty-change'), 10);
+    var newQty = Math.max(0, currentQty + change);
+
+    // 2. Update UI Immediately (Instant Feedback)
+    $input.val(newQty);
+    pendingUpdates[cartKey] = newQty;
+
+    // 3. Clear the previous "Cooling-off" timer
+    clearTimeout(debounceTimer);
+
+    // 4. Start a new timer (e.g., 500ms)
+    debounceTimer = setTimeout(function () {
+      if (isUpdating) return;
+
+      var finalQty = pendingUpdates[cartKey];
+      delete pendingUpdates[cartKey]; // Clear tracking
+
+      if (finalQty === 0) {
+        removeItem(cartKey);
+      } else {
+        updateItem(cartKey, finalQty);
+      }
+    }, 500);
   });
 
   $(document).on('click', '.remove-item', function (e) {
