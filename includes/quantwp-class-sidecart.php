@@ -36,16 +36,8 @@ class QuantWP_SideCart_Main
         // Add shortcode for cart icon
         add_shortcode('quantwp_cart_shortcode', array($this, 'quantwp_icon_shortcode'));
 
-        // Handle auto-open on standard form submission (page reload)
-        add_action('woocommerce_add_to_cart', array($this, 'set_auto_open_cookie'));
     }
 
-    public function set_auto_open_cookie()
-    {
-        if (get_option('quantwp_sidecart_auto_open', 1)) {
-            wc_setcookie('quantwp_added_to_cart', '1', time() + 30);
-        }
-    }
 
     public function enqueue_assets()
     {

@@ -367,14 +367,25 @@ jQuery(document).ready(function ($) {
     removeItem($(this).data('cart-key'));
   });
 
-  // Handle standard page reload add-to-cart events
-  var autoOpenOnLoad = document.cookie.indexOf('quantwp_added_to_cart=1') !== -1;
-  if (autoOpenOnLoad) {
-    document.cookie = "quantwp_added_to_cart=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    if (quantwpData.autoOpen) {
+  // Handle standard page reload add-to-cart (sessionStorage flag)
+  var FLAG = 'quantwp_should_open_sidecart';
+  var savedPath = sessionStorage.getItem(FLAG);
+  var autoOpenOnLoad = false;
+
+  if (savedPath) {
+    sessionStorage.removeItem(FLAG); // always consume immediately
+    if (quantwpData.autoOpen && savedPath === window.location.pathname) {
+      autoOpenOnLoad = true;
       $('body').addClass('quantwp-sidecart-open');
     }
   }
+
+  // Set flag on form submit BEFORE the page reloads
+  $(document).on('submit', 'form.cart', function () {
+    if (quantwpData.autoOpen) {
+      sessionStorage.setItem(FLAG, window.location.pathname);
+    }
+  });
 
   fetchCart().then(function (cart) {
     if (autoOpenOnLoad && cart) {
