@@ -10,44 +10,46 @@ License: GPLv2 or later
 A lightweight WooCommerce side cart with free shipping bar and cross-sells.
 
 == Description ==
-QuantWP Side Cart for WooCommerce is a powerful, lightweight drawer that improves user experience and boosts Average Order Value (AOV).
+**QuantWP Side Cart** is a high-performance, lightweight drawer designed to improve user experience and increase Average Order Value (AOV). It provides a seamless shopping experience that integrates perfectly with any store.
+
+**The entire plugin and all its features are 100% free.**
 
 = Key Features =
-* **Auto-Open Cart:** The side cart automatically slides out the moment a customer adds an item, reducing friction and showing progress immediately.
-* **Dynamic Shipping Progress Bar:** Motivate customers to spend more by showing how close they are to free shipping.
-* **Cross-Sell Carousel:** Increase sales by displaying relevant product recommendations directly in the cart.
-* **Customizable Cart Icons:** Choose from a library of professional icons to match your store's branding.
-* **Shortcode Support:** Use `[quantwp_cart_shortcode]` to place your cart trigger anywhere—header, footer, or custom pages.
+* **Modern Store API Architecture:** Built on the latest WooCommerce Store API for efficient performance and high responsiveness.
+* **Instant AJAX Quantity Updates:** Customers can update item quantities directly in the drawer with zero page refreshes.
+* **Dynamic Free Shipping Threshold:** A real-time progress bar shows customers exactly how much more they need to spend to qualify for free shipping.
+* **Manual Cross-Sell Control:** Take full control of your marketing by manually selecting up to 5 specific products to display in the cart carousel.
+* **Interactive Product Display:** Features a gallery lightbox for products with multiple images and full support for variable products directly in the drawer.
+* **Cross-Sell Performance Analytics:** A built-in dashboard tracks which manual recommendations are being added and their influence on total revenue.
+* **Theme & Builder Independent:** Works with any theme or page builder via the simple [quantwp_cart_shortcode] shortcode.
+* **Fully Customizable:** Easily adjust colors for the shipping bar, carousel, and buttons, and choose from a library of professional icons.
+* **Fully Responsive:** Optimized for a perfect experience across all mobile and desktop devices.
 
 == Installation ==
-1. Search for "QuantWP Side Cart" in your WordPress dashboard or upload the folder to `/wp-content/plugins/`.
-2. Activate the plugin.
-3. Go to **Settings > QuantWP Side Cart** to configure your options.
-4. **Placement:** Add the shortcode `[quantwp_cart_shortcode]` to your site.
-   - **Theme Customizer:** Use an "HTML" or "Shortcode" widget in your Header/Footer builder.
-   - **Page Builders:** Use the "Shortcode" widget in Elementor, Divi, or Beaver Builder.
+
+1. Install and activate the plugin through the **Plugins > Add New** menu in your WordPress dashboard.
+2. Go to **Settings > QuantWP Side Cart** to configure your display options, colors, and free shipping threshold.
+3. **Placement:** Add the shortcode `[quantwp_cart_shortcode]` to your site.
+    * **Tip:** Look for a dedicated "Shortcode" widget in your theme or page builder (like Elementor or Divi). If one isn't available, try an "HTML" or "Text" widget. If you still face issues, please contact our support team.
 
 == Frequently Asked Questions ==
 
 = How do I sync the Shipping Bar with WooCommerce Free Shipping? =
-Our shipping bar acts as a visual mirror. To ensure it matches your checkout:
-1. Go to **WooCommerce > Settings > Shipping** and create a "Free Shipping" method.
-2. Note the "Minimum order amount" you set there.
-3. Go to **Settings > QuantWP Side Cart** and enter that same number in the "Free Shipping Threshold" field.
-Now, the progress bar will reach 100% exactly when WooCommerce activates free shipping at checkout.
+Our shipping bar acts as a visual mirror. To ensure it matches your store settings:
+1. Go to **WooCommerce > Settings > Shipping** and check your "Free Shipping" method.
+2. Note the "Minimum order amount" you have set there.
+3. Go to **Settings > QuantWP Side Cart** and enter that same value in the **Free Shipping Threshold** field.
 
 = How do I set up the Cross-Sell Carousel? =
-The carousel pulls data directly from WooCommerce:
-1. Edit any product in your store.
-2. Go to **Linked Products > Cross-sells**.
-3. Add the products ( in cross-sell field currently) you want to recommend.
-If an item in the cart has cross-sells assigned, they will appear in the side cart carousel.
+You have full manual control over which products appear in the cart:
+1. Go to **Settings > QuantWP Side Cart**.
+2. Use the **Cross-Sell Selection** field to manually pick up to 5 specific products ( simple and variable products are supported).
 
-= How does the Cross-Sell Limit work? =
-If a customer has multiple items in their cart, the total number of cross-sell recommendations could become very large. Use the **Cross-Sell Limit** field in our settings to keep the drawer clean. For example, if you set the limit to "5", we will only show the first 5 available cross-sells, even if 30 are assigned.
+= Does this work with any theme? =
+Yes. QuantWP is theme-independent. As long as you can place the `[quantwp_cart_shortcode]` shortcode in your header, footer, or page content, the side cart will function perfectly regardless of your theme or page builder.
 
-= Where can I use the cart shortcode? =
-You can use `[quantwp_cart_shortcode]` anywhere shortcodes are accepted. It is compatible with all major theme header builders and page builders like Elementor.
+= Is the plugin compatible with the WooCommerce Store API? =
+Absolutely. The plugin is built specifically to leverage the modern WooCommerce Store API, ensuring high performance and fast AJAX updates even on high-traffic sites.
 
 == Changelog ==
 
