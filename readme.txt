@@ -4,7 +4,7 @@ Tags: woocommerce, cart, side cart, ajax cart
 Requires at least: 5.8
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 3.0.16
+Stable tag: 3.0.17
 License: GPLv2 or later
 
 A lightweight WooCommerce side cart with free shipping bar and cross-sells.
@@ -52,6 +52,9 @@ Yes. QuantWP is theme-independent. As long as you can place the `[quantwp_cart_s
 Absolutely. The plugin is built specifically to leverage the modern WooCommerce Store API, ensuring high performance and fast AJAX updates even on high-traffic sites.
 
 == Changelog ==
+
+= 3.0.17 =
+* Updated description, faqs, installation, key features text in readme file
 
 = 3.0.16 =
 * Fix: Replaced 30sec cookie with session storage
