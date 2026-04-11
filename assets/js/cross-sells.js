@@ -11,7 +11,6 @@ jQuery(document).ready(function ($) {
         }).catch(function () { });
     }
 
-    var carousel = { currentIndex: 0, move: null };
     var variationCache = {};
     var addedToCartIds = []; // tracks IDs added this session — client-side source of truth
 
@@ -25,49 +24,11 @@ jQuery(document).ready(function ($) {
     }
 
     // ─── Carousel init ────────────────────────────────────────────────────────
-    function initCarousel() {
-        var $carousel = $('.cross-sells-carousel');
-        if (!$carousel.length) return;
-
-        var $track = $carousel.find('.carousel-track');
-        var $prev = $carousel.find('.carousel-prev');
-        var $next = $carousel.find('.carousel-next');
-
-        carousel.currentIndex = 0;
-        carousel.move = function () {
-            var $items = $track.find('.cross-sell-item');
-            var total = Math.max(0, $items.length - 1);
-            if (!$items.length) return;
-
-            var itemWidth = $items.first().outerWidth(true);
-            if (carousel.currentIndex > total) carousel.currentIndex = total;
-
-            $track.css('transform', 'translateX(' + (-carousel.currentIndex * itemWidth) + 'px)');
-
-            if (total === 0) {
-                $prev.hide(); $next.hide();
-            } else {
-                $prev.show().prop('disabled', carousel.currentIndex === 0);
-                $next.show().prop('disabled', carousel.currentIndex >= total);
-            }
-        };
-
-        $next.off('click').on('click', function () {
-            var total = Math.max(0, $track.find('.cross-sell-item').length - 1);
-            if (carousel.currentIndex < total) { carousel.currentIndex++; carousel.move(); }
-        });
-        $prev.off('click').on('click', function () {
-            if (carousel.currentIndex > 0) { carousel.currentIndex--; carousel.move(); }
-        });
-
-        $(window).off('resize.quantwp').on('resize.quantwp', function () { carousel.currentIndex = 0; carousel.move(); });
-        setTimeout(function () { carousel.move(); }, 50);
-    }
 
     // ─── Build card HTML ──────────────────────────────────────────────────────
     function buildCardHTML(product) {
-        var galleryAttr = esc(JSON.stringify(product.gallery));
-        var hasGallery = product.gallery && product.gallery.length > 1;
+        var galleryAttr = esc(JSON.stringify(product.gallery_html || []));
+        var hasGallery = product.gallery_html && product.gallery_html.length > 1;
 
         var zoomIcon = hasGallery
             ? '<div class="product-image-zoom"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg></div>'
@@ -85,7 +46,7 @@ jQuery(document).ready(function ($) {
             + zoomIcon
             + '</div>'
             + '<div class="product-details">'
-            + '<a href="' + product.permalink + '" class="product-name">' + product.name + '</a>'
+            + '<span class="product-name">' + product.name + '</span>'
             + '<div class="product-price">' + product.price_html + '</div>'
             + btn
             + '</div>'
@@ -130,25 +91,22 @@ jQuery(document).ready(function ($) {
                     var inPermalinks = basePath ? cartPermalinks.indexOf(basePath) !== -1 : false;
                     return !inAdded && !inCart && !inPermalinks;
                 });
-
-
+                // Limit to 5 cross-sells
+                products = products.slice(0, 5);
 
                 if (!products.length) {
                     $wrapper.html('').hide();
                     return;
                 }
 
-                var html = '<div class="cross-sells-header"><h4>You may also like</h4></div>'
-                    + '<div class="cross-sells-carousel">'
-                    + '<button class="carousel-prev" aria-label="Previous">&#x2039;</button>'
-                    + '<div class="carousel-track">';
+                var html = '<div class="cross-sells-header"><h4>You May Also Like</h4></div>'
+                    + '<div class="cross-sells-list">';
 
                 products.forEach(function (p) { html += buildCardHTML(p); });
 
-                html += '</div><button class="carousel-next" aria-label="Next">&#x203a;</button></div>';
+                html += '</div>';
 
                 $wrapper.html(html).fadeIn(200);
-                initCarousel();
             })
             .catch(function (err) {
                 $wrapper.data('loaded', 0);
@@ -185,7 +143,7 @@ jQuery(document).ready(function ($) {
 
         var initialImage = cardImage || (data.variations.length ? data.variations[0].image : '');
         var modal = '<div class="quantwp-variation-modal">'
-            + '<button class="quantwp-lightbox-close">&times;</button>'
+            + '<button class="quantwp-variation-close"><svg viewBox="-0.5 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M3 21.32L21 3.32001" stroke="#000000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M3 3.32001L21 21.32" stroke="#000000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg></button>'
             + '<div class="quantwp-variation-header">'
             + '<div class="quantwp-variation-img"><img src="' + initialImage + '" alt=""></div>'
             + '<div class="quantwp-variation-info">'
@@ -315,17 +273,14 @@ jQuery(document).ready(function ($) {
             return;
         }
 
-        $btn.prop('disabled', true).text('Loading...');
 
         fetch(quantwpCrossSells.crossSellsApiUrl + '/variation/' + productId)
             .then(function (r) { return r.json(); })
             .then(function (data) {
                 variationCache[productId] = data;
-                $btn.prop('disabled', false).text('ADD');
                 openVariationLightbox(productId, title, data, cardImage);
             })
             .catch(function (err) {
-                $btn.prop('disabled', false).text('ADD');
             });
     });
 
@@ -335,8 +290,6 @@ jQuery(document).ready(function ($) {
         var $btn = $(this);
         var productId = parseInt($btn.data('product-id'), 10);
         if (!productId) return;
-
-        $btn.prop('disabled', true).text('Adding…');
 
         trackCrossSellAdd(productId);
 
@@ -355,7 +308,6 @@ jQuery(document).ready(function ($) {
                 return r.json().then(function (d) { return r.ok ? d : Promise.reject(d); });
             })
             .then(function () {
-                $btn.text('Added!');
                 markAdded(productId);
                 $btn.closest('.cross-sell-item').fadeOut(300, function () {
                     $(this).remove();
@@ -364,13 +316,12 @@ jQuery(document).ready(function ($) {
                 $(document.body).trigger('quantwp_cross_sell_added');
             })
             .catch(function (err) {
-                $btn.prop('disabled', false).text('ADD');
             });
     });
 
     // ─── Gallery lightbox ─────────────────────────────────────────────────────
     if ($('.quantwp-lightbox-overlay').length === 0) {
-        $('body').append('<div class="quantwp-lightbox-overlay"><div class="quantwp-lightbox-container"></div></div>');
+        $('body').append('<div id="quantwp-lightbox-overlay" class="quantwp-lightbox-overlay"><button class="quantwp-lightbox-close"><svg viewBox="-0.5 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M3 21.32L21 3.32001" stroke="#000000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M3 3.32001L21 21.32" stroke="#000000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg></button><div class="quantwp-lightbox-container"></div></div>');
     }
 
     $(document).on('click', '.quantwp-lightbox-overlay', function (e) {
@@ -378,7 +329,7 @@ jQuery(document).ready(function ($) {
             closeLightbox();
         }
     });
-    $(document).on('click', '.quantwp-lightbox-close', function () { closeLightbox(); });
+    $(document).on('click', '.quantwp-lightbox-close, .quantwp-variation-close', function () { closeLightbox(); });
 
     $(document).on('click', '.product-image-wrapper', function (e) {
         e.preventDefault();
@@ -388,16 +339,17 @@ jQuery(document).ready(function ($) {
         var idx = 0;
 
         var imgsHtml = '';
-        gallery.forEach(function (url, i) {
-            imgsHtml += '<img src="' + url + '" class="quantwp-gallery-img" style="display:' + (i === 0 ? 'block' : 'none') + '">';
+        gallery.forEach(function (html, i) {
+            var $img = $(html);
+            $img.addClass('quantwp-gallery-img').css('display', (i === 0 ? 'block' : 'none'));
+            imgsHtml += $img.prop('outerHTML');
         });
 
         var html = '<div class="quantwp-gallery-content">'
-            + '<button class="quantwp-lightbox-close">&times;</button>'
             + imgsHtml
-            + '<button class="quantwp-gallery-nav quantwp-gallery-prev">&#x2039;</button>'
-            + '<button class="quantwp-gallery-nav quantwp-gallery-next">&#x203a;</button>'
-            + '</div>';
+            + '</div>'
+            + '<button class="quantwp-gallery-nav quantwp-gallery-prev"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M14.2893 5.70708C13.8988 5.31655 13.2657 5.31655 12.8751 5.70708L7.98768 10.5993C7.20729 11.3805 7.2076 12.6463 7.98837 13.427L12.8787 18.3174C13.2693 18.7079 13.9024 18.7079 14.293 18.3174C14.6835 17.9269 14.6835 17.2937 14.293 16.9032L10.1073 12.7175C9.71678 12.327 9.71678 11.6939 10.1073 11.3033L14.2893 7.12129C14.6799 6.73077 14.6799 6.0976 14.2893 5.70708Z" fill="#ffffff"></path> </g></svg></button>'
+            + '<button class="quantwp-gallery-nav quantwp-gallery-next"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M9.71069 18.2929C10.1012 18.6834 10.7344 18.6834 11.1249 18.2929L16.0123 13.4006C16.7927 12.6195 16.7924 11.3537 16.0117 10.5729L11.1213 5.68254C10.7308 5.29202 10.0976 5.29202 9.70708 5.68254C9.31655 6.07307 9.31655 6.70623 9.70708 7.09676L13.8927 11.2824C14.2833 11.6729 14.2833 12.3061 13.8927 12.6966L9.71069 16.8787C9.32016 17.2692 9.32016 17.9023 9.71069 18.2929Z" fill="#ffffff"></path> </g></svg></button>';
 
         $('.quantwp-lightbox-container').html(html);
         $('.quantwp-lightbox-overlay').addClass('active');
@@ -421,7 +373,7 @@ jQuery(document).ready(function ($) {
         });
 
         var touchStartX = 0, touchEndX = 0;
-        $('.quantwp-gallery-content')
+        $('#quantwp-lightbox-overlay')
             .on('touchstart', function (e) { touchStartX = e.changedTouches[0].screenX; })
             .on('touchend', function (e) {
                 touchEndX = e.changedTouches[0].screenX;

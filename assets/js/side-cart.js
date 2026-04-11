@@ -129,7 +129,7 @@ jQuery(document).ready(function ($) {
 
     if (itemCount > 0) {
       if ($('.cart-count-badge').length === 0) {
-        $('.quantwp-sidecart-trigger').append('<span class="cart-count-badge">' + itemCount + '</span>');
+        $('#quantwp-sidecart-trigger').append('<span class="cart-count-badge">' + itemCount + '</span>');
       } else {
         $('.cart-count-badge').text(itemCount).show();
       }
@@ -177,15 +177,21 @@ jQuery(document).ready(function ($) {
       var fmtCartTotal = makeFormatter(cartTotals);
       var subtotalFormatted = fmtCartTotal(cartTotals.total_items);
 
+      // Check for free shipping
+      var threshold = (typeof quantwpShippingBar !== 'undefined' && quantwpShippingBar.enabled) ? parseFloat(quantwpShippingBar.threshold) : 0;
+      var minorUnit = (cartTotals.currency_minor_unit !== undefined && cartTotals.currency_minor_unit !== null)
+        ? parseInt(cartTotals.currency_minor_unit, 10) : 2;
+      var cartTotalAmount = parseInt(cartTotals.total_items || 0, 10) / Math.pow(10, minorUnit);
+      var isFreeShipping = threshold > 0 && cartTotalAmount >= threshold;
+
+      var shippingHtml = isFreeShipping ? '<div class="cart-shipping-free"><span>Shipping</span><span>FREE</span></div>' : '';
+
       var $footer = $('.quantwp-sidecart-footer');
-      if ($footer.find('.cart-subtotal').length === 0) {
-        $footer.html(
-          '<div class="cart-subtotal"><span>Subtotal:</span><span>' + subtotalFormatted + '</span></div>' +
-          '<a href="' + quantwpData.checkoutUrl + '" class="checkout-button">Checkout</a>'
-        );
-      } else {
-        $('.cart-subtotal span:last-child').text(subtotalFormatted);
-      }
+      $footer.html(
+        '<div class="cart-subtotal"><span>Subtotal</span><span>' + subtotalFormatted + '</span></div>' +
+        shippingHtml +
+        '<a href="' + quantwpData.checkoutUrl + '" class="checkout-button">Checkout</a>'
+      );
       $footer.show();
 
     } else {
@@ -291,7 +297,7 @@ jQuery(document).ready(function ($) {
       .finally(function () { isUpdating = false; });
   }
 
-  $(document).on('click', '.quantwp-sidecart-trigger', function (e) {
+  $(document).on('click', '#quantwp-sidecart-trigger', function (e) {
     e.preventDefault();
     $('body').toggleClass('quantwp-sidecart-open');
   });

@@ -4,7 +4,7 @@ Tags: woocommerce, cart, side cart, ajax cart
 Requires at least: 5.8
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 3.0.17
+Stable tag: 4.0.0
 License: GPLv2 or later
 
 A lightweight WooCommerce side cart with free shipping bar and cross-sells.
@@ -52,6 +52,27 @@ Yes. QuantWP is theme-independent. As long as you can place the `[quantwp_cart_s
 Absolutely. The plugin is built specifically to leverage the modern WooCommerce Store API, ensuring high performance and fast AJAX updates even on high-traffic sites.
 
 == Changelog ==
+
+= 4.0.0 =
+* feat: modernize sidecart UI, optimize cross-sell logic, and enhance admin settings
+
+- UI/UX Refinement:
+  - Switched to ID-based scoping (#quantwp-sidecart-drawer) for more robust CSS and JS targeting.
+  - Modernized the sidecart header/footer structure and added custom SVG icons.
+  - Improved mobile responsiveness for the cross-sell carousel and variation lightbox.
+  - Integrated debounced quantity updates for a snappier frontend experience.
+
+- Performance & Cross-Sells:
+  - Implemented on-demand variation fetching via REST API to reduce initial page load.
+  - Added a dedicated variation selection lightbox and gallery preview for cross-sell products.
+  - Enabled support for WooCommerce Blocks 'added_to_cart' events.
+
+- Admin Enhancements:
+  - Replaced legacy carousel background setting with native 'Icon Color' control.
+  - Migrated cross-sell selection to the native WooCommerce AJAX product search.
+  - Added strict server-side sanitization for product types (Simple/Variable) and a 5-product limit.
+  - Standardized the core settings UI and improved error reporting.
+
 
 = 3.0.17 =
 * Updated description, faqs, installation, key features text in readme file
