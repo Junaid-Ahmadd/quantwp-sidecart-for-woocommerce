@@ -60,6 +60,68 @@ jQuery(document).ready(function (e) {
 
     e(".quantwp-color-picker").wpColorPicker();
 
+    // ─── Shipping Bar Toggle ───────────────────────────────────────────────────
+    var $shippingCheckbox = e('#quantwp_sidecart_shipping_bar_enabled');
+    var $shippingThreshold = e('#quantwp_sidecart_shipping_threshold');
+
+    function updateShippingFieldState() {
+        var enabled = $shippingCheckbox.is(':checked');
+
+        if (enabled) {
+            $shippingThreshold.prop('disabled', false).removeAttr('disabled');
+        } else {
+            $shippingThreshold.prop('disabled', true);
+            $shippingThreshold.css('border-color', '');
+            e('#quantwp-threshold-error').remove();
+        }
+    }
+
+    // On checkbox toggle
+    $shippingCheckbox.on('change', function () {
+        updateShippingFieldState();
+        // Clear the value when user enables it so they must enter intentionally
+        if (e(this).is(':checked')) {
+            $shippingThreshold.val('').focus();
+        }
+    });
+
+    // Validate on form submit
+    e('form').on('submit', function (event) {
+        if ($shippingCheckbox.is(':checked') && $shippingThreshold.val().trim() === '') {
+            event.preventDefault();
+
+            $shippingThreshold.css('border-color', '#d63638');
+
+            if (e('#quantwp-threshold-error').length === 0) {
+                $shippingThreshold.after(
+                    '<p id="quantwp-threshold-error" style="color:#d63638; font-weight:600; margin-top:6px;">⚠ Shipping threshold value cannot be empty.</p>'
+                );
+            }
+
+            // Scroll to the error
+            e('html, body').animate({
+                scrollTop: $shippingThreshold.offset().top - 100
+            }, 400);
+
+            return false;
+        }
+
+        // Clear error styling if valid
+        $shippingThreshold.css('border-color', '');
+        e('#quantwp-threshold-error').remove();
+    });
+
+    // Clear error when user starts typing
+    $shippingThreshold.on('input', function () {
+        if (e(this).val().trim() !== '') {
+            e(this).css('border-color', '');
+            e('#quantwp-threshold-error').remove();
+        }
+    });
+
+    // Run once on page load
+    updateShippingFieldState();
+
     // ─── Analytics Dashboard ───────────────────────────────────────────────
     if (e('#quantwp-analytics-wrap').length === 0) return;
 
