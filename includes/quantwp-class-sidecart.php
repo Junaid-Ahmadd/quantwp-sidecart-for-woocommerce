@@ -78,24 +78,24 @@ class QuantWP_SideCart_Main
             $threshold_color = sanitize_hex_color(
             get_option('quantwp_sidecart_shipping_threshold_color', '#92C1E9')
         );
-        $carousel_bg = sanitize_hex_color(
-            get_option('quantwp_sidecart_carousel_background_color', '#E0F1FF')
-        );
         $btn_bg = sanitize_hex_color(
             get_option('quantwp_sidecart_checkout_btn_bg', '#F87C56')
+        );
+        $icon_color = sanitize_hex_color(
+            get_option('quantwp_sidecart_icon_color', '#000000')
         );
 
         // 2. Fallback to defaults if sanitization fails
         $threshold_color = $threshold_color ?: '#92C1E9';
-        $carousel_bg = $carousel_bg ?: '#E0F1FF';
         $btn_bg = $btn_bg ?: '#F87C56';
+        $icon_color = $icon_color ?: '#000000';
 
         // 3. Create CSS with sanitized values
         $custom_css = "
         :root {
         --quantwp-threshold-color: {$threshold_color};
-        --quantwp-carousel-bg: {$carousel_bg};
         --quantwp-btn-bg: {$btn_bg};
+        --quantwp-icon-color: {$icon_color};
          }
         ";
 
@@ -110,7 +110,7 @@ class QuantWP_SideCart_Main
 
         <div class="quantwp-sidecart-overlay"></div>
 
-        <div class="quantwp-sidecart-drawer">
+        <div id="quantwp-sidecart-drawer" class="quantwp-sidecart-drawer">
             <div class="quantwp-sidecart-wrapper">
                 <?php echo $this->get_cart_content_html(); ?>
             </div>
@@ -122,12 +122,12 @@ class QuantWP_SideCart_Main
     {
         ob_start();
      ?>
-        <header class="quantwp-sidecart-header">
+        <div class="quantwp-sidecart-header">
             <h4 class="quantwp-sidecart-title">
                 <?php printf(esc_html__('Cart (%d)', 'quantwp-sidecart-for-woocommerce'), absint(WC()->cart->get_cart_contents_count())); ?>
             </h4>
-            <button class="quantwp-close-button" type="button">&times;</button>
-        </header>
+            <button class="quantwp-close-button" type="button"><svg viewBox="-0.5 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M3 21.32L21 3.32001" stroke="#000000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M3 3.32001L21 21.32" stroke="#000000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg></button>
+        </div>
 
         <?php do_action('quantwp_sidecart_after_header'); ?>
 
@@ -138,9 +138,9 @@ class QuantWP_SideCart_Main
         <?php do_action('quantwp_sidecart_after_cart_items'); ?>
         </div>
 
-        <footer class="quantwp-sidecart-footer" style="display:none;">
+        <div class="quantwp-sidecart-footer" style="display:none;">
             <!-- Populated by side-cart.js -->
-        </footer>
+        </div>
      <?php
      return ob_get_clean();
     }
@@ -166,7 +166,7 @@ class QuantWP_SideCart_Main
 
         ob_start();
     ?>
-        <a href="#" class="quantwp-sidecart-trigger" aria-label="<?php esc_attr_e('View Cart', 'quantwp-sidecart-for-woocommerce'); ?>">
+        <a href="#" id="quantwp-sidecart-trigger" class="quantwp-sidecart-trigger" aria-label="<?php esc_attr_e('View Cart', 'quantwp-sidecart-for-woocommerce'); ?>">
             <?php echo wp_kses($svg, $allowed_svg); ?>
             <?php if ($cart_count > 0) : ?>
                 <span class="cart-count-badge"><?php echo esc_html($cart_count); ?></span>

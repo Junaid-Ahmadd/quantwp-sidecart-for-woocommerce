@@ -1,16 +1,64 @@
 jQuery(document).ready(function (e) {
+
+    // Form submit — convert multi-select to comma-separated string
+    e('form').on('submit', function () {
+        var ids = e('#quantwp_sidecart_cross_sells_products').val() || [];
+        e('<input>')
+            .attr({
+                type: 'hidden',
+                name: 'quantwp_sidecart_cross_sells_products'
+            })
+            .val(ids.join(','))
+            .appendTo(e(this));
+
+        // Remove the array-named select from submission
+        e('#quantwp_sidecart_cross_sells_products').removeAttr('name');
+    });
+
+    // ─── Cross-sell inline limit warning ──────────────────────────────────────
+    var $productField = e('#quantwp_sidecart_cross_sells_products');
+
+    function updateCrossSellError() {
+        var count = ($productField.val() || []).length;
+        var $existing = e('#quantwp-cs-limit-error');
+
+        if (count > 5) {
+            if ($existing.length === 0) {
+                $productField.closest('td').find('p.description').before(
+                    '<p id="quantwp-cs-limit-error" style="color:#d63638; font-weight:600; margin:6px 0;">⚠ Only 5 products are allowed. The last ' + (count - 5) + ' will be removed on save.</p>'
+                );
+            } else {
+                $existing.html('⚠ Only 5 products are allowed. The last ' + (count - 5) + ' will be removed on save.');
+            }
+        } else {
+            $existing.remove();
+        }
+    }
+
+    // WooCommerce initializes wc-product-search on DOM ready so wait a tick
+    setTimeout(function () {
+        $productField.on('select2:select select2:unselect', function () {
+            updateCrossSellError();
+        });
+    }, 300);
+
+
+    // Shipping Threshold: Only numbers and dots
+    e("#quantwp_sidecart_shipping_threshold").on("input", function () {
+        var val = e(this).val();
+        var cleaned = val.replace(/[^0-9.]/g, '');
+        if ((cleaned.match(/\./g) || []).length > 1) {
+            cleaned = cleaned.replace(/\.+$/, "");
+        }
+        e(this).val(cleaned);
+    });
+
     e(".side-cart-option").click(function () {
         e(".side-cart-option").removeClass("selected");
         e(this).addClass("selected");
     });
 
     e(".quantwp-color-picker").wpColorPicker();
-
-    e("form").on("submit", function () {
-        var ids = e("#quantwp_cs_display").val() || [];
-        ids = ids.slice(0, 5);
-        e("#quantwp_sidecart_cross_sells_products").val(ids.join(","));
-    });
 
     // ─── Analytics Dashboard ───────────────────────────────────────────────
     if (e('#quantwp-analytics-wrap').length === 0) return;

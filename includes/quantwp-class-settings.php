@@ -96,9 +96,9 @@ class QuantWP_SideCart_Settings
             $this->option_group,
             'quantwp_sidecart_shipping_threshold',
             array(
-                'type' => 'number',
-                'default' => 50,
-                'sanitize_callback' => 'floatval'
+                'type' => 'string',
+                'default' => '50',
+                'sanitize_callback' => array($this, 'sanitize_threshold_amount')
             )
         );
 
@@ -141,18 +141,19 @@ class QuantWP_SideCart_Settings
             array('default' => '#92C1E9', 'sanitize_callback' => 'sanitize_hex_color')
         );
 
-        // Background Color Carsousel 
-        register_setting(
-            $this->option_group,
-            'quantwp_sidecart_carousel_background_color',
-            array('default' => '#E0F1FF', 'sanitize_callback' => 'sanitize_hex_color')
-        );
 
         // Checkout Button Style
         register_setting(
             $this->option_group,
             'quantwp_sidecart_checkout_btn_bg',
             array('default' => '#F87C56', 'sanitize_callback' => 'sanitize_hex_color')
+        );
+
+        // Icon Color
+        register_setting(
+            $this->option_group,
+            'quantwp_sidecart_icon_color',
+            array('default' => '#000000', 'sanitize_callback' => 'sanitize_hex_color')
         );
     }
 
@@ -322,12 +323,10 @@ class QuantWP_SideCart_Settings
                             </label>
                         </th>
                         <td>
-                            <input type="number"
+                            <input type="text"
                                 name="quantwp_sidecart_shipping_threshold"
                                 id="quantwp_sidecart_shipping_threshold"
-                                value="<?php echo esc_attr(get_option('quantwp_sidecart_shipping_threshold', 50)); ?>"
-                                min="0"
-                                step="0.01"
+                                value="<?php echo esc_attr(get_option('quantwp_sidecart_shipping_threshold', '50')); ?>"
                                 class="regular-text">
                             <p class="description">
                                 <?php
@@ -358,46 +357,42 @@ class QuantWP_SideCart_Settings
                                 value="1"
                                 <?php checked(get_option('quantwp_sidecart_cross_sells_enabled', 1), 1); ?>>
                             <p class="description">
-                                <?php esc_html_e('Show cross-sell product carousel in side cart.', 'quantwp-sidecart-for-woocommerce'); ?>
+                                <?php esc_html_e('Show cross-sell product list in side cart.', 'quantwp-sidecart-for-woocommerce'); ?>
                             </p>
                         </td>
                     </tr>
 
                     <tr>
-                        <th scope="row">
-                            <label for="quantwp_cs_display">
-                                <?php esc_html_e('Featured Products', 'quantwp-sidecart-for-woocommerce'); ?>
-                            </label>
-                        </th>
-                        <td>
-                            <?php
-                            $saved_ids    = array_filter(array_map('absint', explode(',', get_option('quantwp_sidecart_cross_sells_products', ''))));
-                            $options_html = '';
-                            foreach ($saved_ids as $pid) {
-                                $p = wc_get_product($pid);
-                                if ($p) {
-                                    $options_html .= '<option value="' . esc_attr($pid) . '" selected="selected">' . esc_html($p->get_formatted_name()) . '</option>';
-                                }
-                            }
-                            ?>
-                            <input type="hidden"
-                                id="quantwp_sidecart_cross_sells_products"
-                                name="quantwp_sidecart_cross_sells_products"
-                                value="<?php echo esc_attr(get_option('quantwp_sidecart_cross_sells_products', '')); ?>">
-                            <select
-                                id="quantwp_cs_display"
-                                class="wc-product-search"
-                                multiple
-                                style="width:400px;"
-                                data-placeholder="<?php esc_attr_e('Search for products…', 'quantwp-sidecart-for-woocommerce'); ?>"
-                                data-action="woocommerce_json_search_products">
-                                <?php echo $options_html; // already escaped above ?>
-                            </select>
-                            <p class="description">
-                                <?php esc_html_e('Select up to 5 products to show in the sidecart carousel.', 'quantwp-sidecart-for-woocommerce'); ?>
-                            </p>
-                        </td>
-                    </tr>
+    <th scope="row">
+        <label for="quantwp_sidecart_cross_sells_products">
+            <?php esc_html_e('Featured Products', 'quantwp-sidecart-for-woocommerce'); ?>
+        </label>
+    </th>
+    <td>
+        <?php
+        $saved_ids = array_filter(array_map('absint', explode(',', get_option('quantwp_sidecart_cross_sells_products', ''))));
+        ?>
+        <select
+            id="quantwp_sidecart_cross_sells_products"
+            name="quantwp_sidecart_cross_sells_products"
+            class="wc-product-search"
+            multiple="multiple"
+            style="width:400px;"
+            data-placeholder="<?php esc_attr_e('Search for products…', 'quantwp-sidecart-for-woocommerce'); ?>"
+            data-action="woocommerce_json_search_products">
+            <?php foreach ($saved_ids as $pid) :
+                $p = wc_get_product($pid);
+                if ($p) : ?>
+                    <option value="<?php echo esc_attr($pid); ?>" selected="selected">
+                        <?php echo esc_html($p->get_formatted_name()); ?>
+                    </option>
+            <?php endif; endforeach; ?>
+        </select>
+        <p class="description">
+            <?php esc_html_e('Select up to 5 products to show in the sidecart.', 'quantwp-sidecart-for-woocommerce'); ?>
+        </p>
+    </td>
+</tr>
                 </table>
 
                 <h2><?php esc_html_e('Cart Icon', 'quantwp-sidecart-for-woocommerce'); ?></h2>
@@ -407,6 +402,15 @@ class QuantWP_SideCart_Settings
                         <td>
                             <?php $this->render_icon_selector(); ?>
                             <p class="description"><?php esc_html_e('Select the icon to display on your site trigger.', 'quantwp-sidecart-for-woocommerce'); ?></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php esc_html_e('Icon Color', 'quantwp-sidecart-for-woocommerce'); ?></th>
+                        <td>
+                            <input type="text" name="quantwp_sidecart_icon_color"
+                                class="quantwp-color-picker"
+                                value="<?php echo esc_attr(get_option('quantwp_sidecart_icon_color', '#000000')); ?>">
+                            <p class="description"><?php esc_html_e('Choose the color for your cart icon.', 'quantwp-sidecart-for-woocommerce'); ?></p>
                         </td>
                     </tr>
                 </table>
@@ -420,15 +424,6 @@ class QuantWP_SideCart_Settings
                                 class="quantwp-color-picker"
                                 value="<?php echo esc_attr(get_option('quantwp_sidecart_shipping_threshold_color', '#92C1E9')); ?>">
                             <p class="description"><?php esc_html_e('Shipping Threshold Color.', 'quantwp-sidecart-for-woocommerce'); ?></p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row"><?php esc_html_e('Carousel Background Color', 'quantwp-sidecart-for-woocommerce'); ?></th>
-                        <td>
-                            <input type="text" name="quantwp_sidecart_carousel_background_color"
-                                class="quantwp-color-picker"
-                                value="<?php echo esc_attr(get_option('quantwp_sidecart_carousel_background_color', '#E0F1FF')); ?>">
-                            <p class="description"><?php esc_html_e('Carousel Background Color.', 'quantwp-sidecart-for-woocommerce'); ?></p>
                         </td>
                     </tr>
                     <tr>
@@ -494,12 +489,58 @@ class QuantWP_SideCart_Settings
 <?php
 }
 
-    public function sanitize_product_ids($value)
+    public function sanitize_threshold_amount($value)
     {
-        $ids = array_filter(array_map('absint', explode(',', $value)));
-        $ids = array_slice(array_unique($ids), 0, 5);
-        return implode(',', $ids);
+        // Remove everything except numbers and dots
+        $value = preg_replace('/[^0-9.]/', '', $value);
+        
+        // Ensure only one dot exists (keep the first one)
+        $parts = explode('.', $value);
+        if (count($parts) > 2) {
+            $value = $parts[0] . '.' . implode('', array_slice($parts, 1));
+        }
+        
+        return $value;
     }
+
+    public function sanitize_product_ids($value)
+{
+    $ids = array_filter(array_map('absint', explode(',', $value)));
+    $clean_ids = array();
+
+    foreach ($ids as $id) {
+        $product = wc_get_product($id);
+        if ($product && in_array($product->get_type(), array('simple', 'variable'))) {
+            $clean_ids[] = $id;
+        } else {
+            $name = $product ? $product->get_name() : '#' . $id;
+            add_settings_error(
+                'quantwp_sidecart_messages',
+                'invalid_product_type_' . $id,
+                sprintf(
+                    __('%s is not a simple or variable product. Only simple and variable products are allowed.', 'quantwp-sidecart-for-woocommerce'),
+                    '<strong>' . esc_html($name) . '</strong>'
+                ),
+                'error'
+            );
+        }
+    }
+
+    $clean_ids = array_unique($clean_ids);
+
+    // If more than 5 submitted, keep first 5 and show an error
+    if (count($clean_ids) > 5) {
+        $clean_ids = array_slice($clean_ids, 0, 5);
+        add_settings_error(
+            'quantwp_sidecart_messages',
+            'too_many_products',
+            __('You selected more than 5 cross-sell products. Only the first 5 have been saved. The rest were removed.', 'quantwp-sidecart-for-woocommerce'),
+            'error'
+        );
+    }
+
+    return implode(',', $clean_ids);
+}
 
     public function enqueue_admin_assets($hook)
     {

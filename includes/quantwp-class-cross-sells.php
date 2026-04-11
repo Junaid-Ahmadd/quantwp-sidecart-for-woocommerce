@@ -138,27 +138,28 @@ class QuantWP_SideCart_Cross_Sells
             // Gallery images: full thumbnail (300x300) for the lightbox.
             $main_image_id     = $product->get_image_id();
             $gallery_image_ids = $product->get_gallery_image_ids();
+            
+            // Add main image to the front for the lightbox
             array_unshift($gallery_image_ids, $main_image_id);
-
-            $card_urls    = array();
-            $gallery_urls = array();
+            
+            $gallery_html = array();
             foreach (array_unique($gallery_image_ids) as $img_id) {
                 if ($img_id) {
-                    $small = wp_get_attachment_image_url($img_id, 'woocommerce_gallery_thumbnail');
-                    $large = wp_get_attachment_image_url($img_id, 'woocommerce_thumbnail');
-                    if ($small) $card_urls[]    = $small;
-                    if ($large) $gallery_urls[] = $large;
+                    $gallery_html[] = wp_get_attachment_image($img_id, 'woocommerce_thumbnail', false, array(
+                        'class' => 'qwp-gallery-img',
+                        'loading' => 'lazy'
+                    ));
                 }
             }
 
             $products[] = array(
-                'id'          => $product->get_id(),
-                'name'        => $product->get_name(),
-                'price_html'  => $product->get_price_html(),
-                'permalink'   => $product->get_permalink(),
-                'image'       => $card_urls[0] ?? '',
-                'gallery'     => $gallery_urls,
-                'is_variable' => $product->is_type('variable'),
+                'id'           => $product->get_id(),
+                'name'         => $product->get_name(),
+                'price_html'   => $product->get_price_html(),
+                'permalink'    => $product->get_permalink(),
+                'image'        => wp_get_attachment_image_url($main_image_id, 'woocommerce_thumbnail'),
+                'gallery_html' => $gallery_html,
+                'is_variable'  => $product->is_type('variable'),
             );
         }
 
