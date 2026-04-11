@@ -87,7 +87,7 @@ class QuantWP_SideCart_Settings
             'quantwp_sidecart_shipping_bar_enabled',
             array(
                 'type' => 'boolean',
-                'default' => 1,
+                'default' => 0,
                 'sanitize_callback' => 'rest_sanitize_boolean'
             )
         );
@@ -97,7 +97,7 @@ class QuantWP_SideCart_Settings
             'quantwp_sidecart_shipping_threshold',
             array(
                 'type' => 'string',
-                'default' => '50',
+                'default' => '',
                 'sanitize_callback' => array($this, 'sanitize_threshold_amount')
             )
         );
@@ -309,7 +309,7 @@ class QuantWP_SideCart_Settings
                                 name="quantwp_sidecart_shipping_bar_enabled"
                                 id="quantwp_sidecart_shipping_bar_enabled"
                                 value="1"
-                                <?php checked(get_option('quantwp_sidecart_shipping_bar_enabled', 1), 1); ?>>
+                                <?php checked(get_option('quantwp_sidecart_shipping_bar_enabled', 0), 1); ?>>
                             <p class="description">
                                 <?php esc_html_e('Show free shipping progress bar in side cart.', 'quantwp-sidecart-for-woocommerce'); ?>
                             </p>
@@ -326,8 +326,9 @@ class QuantWP_SideCart_Settings
                             <input type="text"
                                 name="quantwp_sidecart_shipping_threshold"
                                 id="quantwp_sidecart_shipping_threshold"
-                                value="<?php echo esc_attr(get_option('quantwp_sidecart_shipping_threshold', '50')); ?>"
-                                class="regular-text">
+                                value="<?php echo esc_attr(get_option('quantwp_sidecart_shipping_threshold', '')); ?>"
+                                class="regular-text"
+                                <?php if (!get_option('quantwp_sidecart_shipping_bar_enabled', 0)) { echo 'disabled="disabled"'; } ?>>
                             <p class="description">
                                 <?php
                                 printf(
@@ -490,18 +491,31 @@ class QuantWP_SideCart_Settings
 }
 
     public function sanitize_threshold_amount($value)
-    {
-        // Remove everything except numbers and dots
-        $value = preg_replace('/[^0-9.]/', '', $value);
-        
-        // Ensure only one dot exists (keep the first one)
-        $parts = explode('.', $value);
-        if (count($parts) > 2) {
-            $value = $parts[0] . '.' . implode('', array_slice($parts, 1));
-        }
-        
-        return $value;
+{
+    // If shipping bar is enabled, threshold can't be empty
+    $shipping_enabled = isset($_POST['quantwp_sidecart_shipping_bar_enabled']) ? 1 : 0;
+
+    if ($shipping_enabled && trim($value) === '') {
+        add_settings_error(
+            'quantwp_sidecart_messages',
+            'empty_shipping_threshold',
+            __('Shipping threshold value cannot be empty when the shipping bar is enabled.', 'quantwp-sidecart-for-woocommerce'),
+            'error'
+        );
+        // Return the previously saved value so it doesn't wipe existing data
+        return get_option('quantwp_sidecart_shipping_threshold', '');
     }
+
+    // Remove everything except numbers and dots
+    $value = preg_replace('/[^0-9.]/', '', $value);
+
+    $parts = explode('.', $value);
+    if (count($parts) > 2) {
+        $value = $parts[0] . '.' . implode('', array_slice($parts, 1));
+    }
+
+    return $value;
+}
 
     public function sanitize_product_ids($value)
 {
@@ -551,8 +565,7 @@ class QuantWP_SideCart_Settings
 
         $suffix = defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ? '' : '.min';
 
-        wp_enqueue_script('quantwp-sidecart-admin', QUANTWP_URL . 'assets/js/admin' . $suffix . '.js', array('jquery', 'wp-color-picker'), QUANTWP_VERSION, true);
-        wp_enqueue_style('quantwp-sidecart-admin', QUANTWP_URL . 'assets/css/admin' . $suffix . '.css', array(), QUANTWP_VERSION);
+        wp_enqueue_script('quantwp-sidecart-admin', QUANTWP_URL . 'assets/js/admin' . $suffix . '.js', array('jquery', 'wp-color-picker', 'wc-enhanced-select'), QUANTWP_VERSION, true);        wp_enqueue_style('quantwp-sidecart-admin', QUANTWP_URL . 'assets/css/admin' . $suffix . '.css', array(), QUANTWP_VERSION);
         wp_enqueue_style('wp-color-picker');
         wp_enqueue_script('wp-color-picker');
 
