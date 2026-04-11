@@ -45,7 +45,7 @@ class QuantWP_SideCart_Shipping_Bar
 
     public function get_threshold()
     {
-        return floatval(get_option('quantwp_sidecart_shipping_threshold', 50));
+        return floatval(get_option('quantwp_sidecart_shipping_threshold', ''));
     }
 
     public function get_cart_total()
@@ -81,7 +81,7 @@ class QuantWP_SideCart_Shipping_Bar
 
     public function render_shipping_bar()
     {
-        if (!get_option('quantwp_sidecart_shipping_bar_enabled', 1)) {
+        if (!get_option('quantwp_sidecart_shipping_bar_enabled', 0)) {
             return;
         }
 
