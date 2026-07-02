@@ -37,6 +37,9 @@ jQuery(document).ready(function ($) {
         var btn = product.is_variable
             ? '<button class="add-to-cart-btn" data-product-id="' + product.id + '" data-product-title="' + esc(product.name) + '" data-variable="1">ADD</button>'
             : '<button class="add-to-cart-btn" data-product-id="' + product.id + '">ADD</button>';
+        // Note: data-product-title uses esc() for the HTML attribute, but when read back via
+        // jQuery .data() the value is used as HTML (line 150), so openVariationLightbox
+        // receives the already-escaped string — we insert it with innerHTML to decode entities.
 
         return '<div class="cross-sell-item">'
             + '<div class="product-image-wrapper" data-gallery="' + galleryAttr + '">'
@@ -147,7 +150,7 @@ jQuery(document).ready(function ($) {
             + '<div class="quantwp-variation-header">'
             + '<div class="quantwp-variation-img"><img src="' + initialImage + '" alt=""></div>'
             + '<div class="quantwp-variation-info">'
-            + '<h3 class="quantwp-variation-title">' + productTitle + '</h3>'
+            + '<h3 class="quantwp-variation-title">' + $('<div>').html(productTitle).text() + '</h3>'
             + '<div class="quantwp-variation-price"></div>'
             + '</div>'
             + '</div>'
