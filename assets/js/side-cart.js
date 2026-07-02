@@ -108,7 +108,7 @@ jQuery(document).ready(function ($) {
     return '<div class="quantwp-sidecart-item">' +
       '<div class="quantwp-sidecart-item-image">' + imgHtml + '</div>' +
       '<div class="quantwp-sidecart-item-details">' +
-      '<a href="' + item.permalink + '" class="product-name">' + $('<div>').text(item.name).html() + '</a>' +
+      '<a href="' + item.permalink + '" class="product-name">' + item.name + '</a>' +
       variationHtml +
       '<div class="quantwp-sidecart-item-details-inner">' +
       '<div class="quantity-controls" data-cart-key="' + item.key + '">' +
