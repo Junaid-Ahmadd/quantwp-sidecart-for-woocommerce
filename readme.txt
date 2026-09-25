@@ -4,7 +4,7 @@ Tags: woocommerce, cart, side cart, ajax cart
 Requires at least: 5.8
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 4.1.5
+Stable tag: 4.1.6
 License: GPLv2 or later
 
 A lightweight WooCommerce side cart with free shipping bar and cross-sells.
@@ -16,13 +16,13 @@ A lightweight WooCommerce side cart with free shipping bar and cross-sells.
 
 = Key Features =
 * **Modern Store API Architecture:** Built on the latest WooCommerce Store API for efficient performance and high responsiveness.
-* **Instant AJAX Quantity Updates:** Customers can update item quantities directly in the drawer with zero page refreshes.
+* **Instant Quantity Updates:** Customers can update item quantities directly in the drawer with zero page refreshes.
 * **Dynamic Free Shipping Threshold:** A real-time progress bar shows customers exactly how much more they need to spend to qualify for free shipping.
-* **Manual Cross-Sell Control:** Take full control of your marketing by manually selecting up to 5 specific products to display in the cart carousel.
+* **Manual Cross-Sell Control:** Take full control of your marketing by manually selecting up to 5 specific products to display in the cart drawer.
 * **Interactive Product Display:** Features a gallery lightbox for products with multiple images and full support for variable products directly in the drawer.
 * **Cross-Sell Performance Analytics:** A built-in dashboard tracks which manual recommendations are being added and their influence on total revenue.
 * **Theme & Builder Independent:** Works with any theme or page builder via the simple [quantwp_cart_shortcode] shortcode.
-* **Fully Customizable:** Easily adjust colors for the shipping bar, carousel, and buttons, and choose from a library of professional icons.
+* **Fully Customizable:** Easily adjust colors for the shipping bar and buttons, and choose from a library of professional icons.
 * **Fully Responsive:** Optimized for a perfect experience across all mobile and desktop devices.
 
 == Installation ==
@@ -40,21 +40,24 @@ Our shipping bar acts as a visual mirror. To ensure it matches your store settin
 2. Note the "Minimum order amount" you have set there.
 3. Go to **Settings > QuantWP Side Cart** and enter that same value in the **Free Shipping Threshold** field.
 
-= How do I set up the Cross-Sell Carousel? =
+= How do I set up the Cross-Sell Products? =
 You have full manual control over which products appear in the cart:
 1. Go to **Settings > QuantWP Side Cart**.
-2. Use the **Cross-Sell Selection** field to manually pick up to 5 specific products ( simple and variable products are supported).
+2. Use the **Featured Products** field to manually pick up to 5 specific products (simple and variable products are supported).
 
 = Does this work with any theme? =
 Yes. QuantWP is theme-independent. As long as you can place the `[quantwp_cart_shortcode]` shortcode in your header, footer, or page content, the side cart will function perfectly regardless of your theme or page builder.
 
 = Is the plugin compatible with the WooCommerce Store API? =
-Absolutely. The plugin is built specifically to leverage the modern WooCommerce Store API, ensuring high performance and fast AJAX updates even on high-traffic sites.
+Absolutely. The plugin is built specifically to leverage the modern WooCommerce Store API, ensuring high performance and fast real-time updates even on high-traffic sites.
 
 == Changelog ==
 
+= 4.1.6 =
+* Updated stable tag.
+
 = 4.1.5 =
-* Fixed Product title in both cart items and variation model.
+* Fixed Product title in both cart items and variation modal.
 
 = 4.1.4 =
 * Updated to wordpress version 7.0
@@ -63,7 +66,7 @@ Absolutely. The plugin is built specifically to leverage the modern WooCommerce 
 * Added woocommerce HPOS compatibility code.
 
 = 4.1.2 =
-* Updated free shipping 'Party Poper' icon with svg.
+* Updated free shipping 'Party Popper' icon with svg.
 
 = 4.1.1 =
 * Updated internal logic for shipping threshold setting field.
@@ -77,7 +80,7 @@ Absolutely. The plugin is built specifically to leverage the modern WooCommerce 
 - UI/UX Refinement:
   - Switched to ID-based scoping (#quantwp-sidecart-drawer) for more robust CSS and JS targeting.
   - Modernized the sidecart header/footer structure and added custom SVG icons.
-  - Improved mobile responsiveness for the cross-sell carousel and variation lightbox.
+  - Improved mobile responsiveness for the cross-sell product list and variation lightbox.
   - Integrated debounced quantity updates for a snappier frontend experience.
 
 - Performance & Cross-Sells:
@@ -133,10 +136,10 @@ Absolutely. The plugin is built specifically to leverage the modern WooCommerce 
 * Fix: Fixed CPU spike on settings save with heavy fragments cache and transient api.
 
 = 1.0.3 =
-* Fix: Resolved issue where shipping threshold color was linked to carousel background.
+* Fix: Resolved issue where shipping threshold color was linked to the cross-sell section background.
 
 = 1.0.2 =
-* **New:** Added "Appearance" settings for easy color customization (Checkout Button, Carousel Background, Text).
+* **New:** Added "Appearance" settings for easy color customization (Checkout Button, Icon Color, Shipping Bar).
 * **New:** Added "Start Shopping" button when the cart is empty.
 * **Enhancement:** Added helpful tooltips and info boxes to the settings page for better guidance.
 * **Enhancement:** Implemented CSS variables for lightweight dynamic styling.
@@ -147,7 +150,3 @@ Absolutely. The plugin is built specifically to leverage the modern WooCommerce 
 
 = 1.0.0 =
 * Initial release.
-```
-
-
----

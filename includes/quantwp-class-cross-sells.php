@@ -134,7 +134,7 @@ class QuantWP_SideCart_Cross_Sells
                 continue;
             }
 
-            // Card image: small (100x100) for display in the carousel.
+            // Card image: small (100x100) for display in the cross-sell list.
             // Gallery images: full thumbnail (300x300) for the lightbox.
             $main_image_id     = $product->get_image_id();
             $gallery_image_ids = $product->get_gallery_image_ids();

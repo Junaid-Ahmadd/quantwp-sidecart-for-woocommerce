@@ -23,7 +23,7 @@ jQuery(document).ready(function ($) {
         $('.quantwp-cross-sells-wrapper').data('loaded', 0);
     }
 
-    // ─── Carousel init ────────────────────────────────────────────────────────
+    // ─── Cross-sell list init ─────────────────────────────────────────────────
 
     // ─── Build card HTML ──────────────────────────────────────────────────────
     function buildCardHTML(product) {
@@ -398,7 +398,7 @@ jQuery(document).ready(function ($) {
     // before this event fires, so quantwpCartProductIds is accurate here.
     $(document.body).on('quantwp_cart_item_removed', function () {
         // Rebuild addedToCartIds to only keep products still in cart
-        // so removed products can reappear in the carousel
+        // so removed products can reappear in the cross-sell list
         addedToCartIds = addedToCartIds.filter(function (id) {
             return window.quantwpCartProductIds.indexOf(id) !== -1;
         });
@@ -406,7 +406,7 @@ jQuery(document).ready(function ($) {
         loadCrossSells();
     });
 
-    // External add to cart (product page, blocks) — reload carousel
+    // External add to cart (product page, blocks) — reload cross-sell list
     $(document.body).on('quantwp_cart_synced', function () {
         $('.quantwp-cross-sells-wrapper').data('loaded', 0);
         if ($('body').hasClass('quantwp-sidecart-open')) {
