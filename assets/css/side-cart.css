@@ -459,7 +459,7 @@ body.quantwp-sidecart-open {
 }
 
 /* ============================================
-   CROSS-SELLS CAROUSEL
+   CROSS-SELLS PRODUCT LIST
    ============================================ */
 #quantwp-sidecart-drawer .quantwp-cross-sells-wrapper {
     padding: 0;
@@ -926,7 +926,7 @@ body.quantwp-sidecart-open {
     border-color: var(--quantwp-btn-bg, #f87c56);
 }
 
-/* Variable Add to Cart Button Carousel */
+/* Variable Add to Cart Button — Cross-Sell List */
 #quantwp-sidecart-drawer .variable-add-to-cart-btn {
     width: 60%;
     padding: 10px 16px;

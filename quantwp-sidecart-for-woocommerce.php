@@ -3,8 +3,8 @@
 /**
  * Plugin Name: QuantWP – Side Cart for WooCommerce
  * Plugin URI: https://github.com/Junaid-Ahmadd/quantwp-sidecart-for-woocommerce
- * Description: A lightweight WooCommerce side cart with AJAX updates, free shipping progress bar, and cross-sell carousel.
- * Version: 4.1.5
+ * Description: A lightweight WooCommerce side cart with real-time updates, free shipping progress bar, and cross-sell product recommendations.
+ * Version: 4.1.6
  * Requires at least: 5.8
  * Requires PHP: 7.4
  * Author: Junaid Ahmad
@@ -32,7 +32,7 @@ add_action('before_woocommerce_init', function() {
 });
 
 // Define plugin constants
-define('QUANTWP_VERSION', '4.1.5');
+define('QUANTWP_VERSION', '4.1.6');
 define('QUANTWP_PATH', plugin_dir_path(__FILE__));
 define('QUANTWP_URL', plugin_dir_url(__FILE__));
 define('QUANTWP_BASENAME', plugin_basename(__FILE__));
